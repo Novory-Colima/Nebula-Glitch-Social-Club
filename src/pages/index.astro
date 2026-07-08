@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import DiscoverySection from '../components/sections/DiscoverySection.astro';
+import SignatureDrinksSection from '../components/sections/SignatureDrinksSection.astro';
+import MenuSection from '../components/sections/MenuSection.astro';
+import RoomsSection from '../components/sections/RoomsSection.astro';
+import GamingSection from '../components/sections/GamingSection.astro';
+import CommunitySection from '../components/sections/CommunitySection.astro';
+import GallerySection from '../components/sections/GallerySection.astro';
+import ClimaxSection from '../components/sections/ClimaxSection.astro';
+import FooterSection from '../components/sections/FooterSection.astro';
+---
+
+<BaseLayout>
+  <main class="relative bg-[var(--color-bg-primary)] selection:bg-[var(--color-accent-primary)] selection:text-white">
+    <!-- 1. Contemplación — café primero -->
+    <HeroSection />
+    <!-- 2. Filosofía — por qué existimos -->
+    <DiscoverySection />
+    <!-- 3. Bebidas Signature — el producto estrella -->
+    <SignatureDrinksSection />
+    <!-- 4. Menú — la carta completa -->
+    <MenuSection />
+    <!-- 5. El Espacio — el lugar físico -->
+    <RoomsSection />
+    <!-- 6. Gaming — complemento discreto -->
+    <GamingSection />
+    <!-- 7. Comunidad — pertenencia y eventos -->
+    <CommunitySection />
+    <!-- 8. Galería — inmersión editorial -->
+    <GallerySection />
+    <!-- 9. CTA Final — invitación a descubrir -->
+    <ClimaxSection />
+  </main>
+  <!-- 10. Footer — salida elegante -->
+  <FooterSection />
+</BaseLayout>

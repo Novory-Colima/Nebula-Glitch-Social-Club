@@ -1,0 +1,98 @@
+---
+import { siteContent } from '../../core/data/content';
+import SectionTitle from '../ui/SectionTitle.astro';
+---
+
+<section id="community" class="relative py-32 md:py-48 bg-[var(--color-bg-primary)] z-10 overflow-hidden">
+  <!-- Warm glow -->
+  <div class="absolute top-1/2 left-0 w-[40%] h-[40%] -translate-y-1/2 rounded-full bg-[var(--color-accent-primary)] blur-[200px] opacity-[0.04] mix-blend-screen"></div>
+
+  <div class="container mx-auto px-6 md:px-12 max-w-6xl">
+    
+    <!-- Header — large, editorial -->
+    <div class="mb-24 max-w-2xl">
+      <span class="community-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-secondary mb-8 opacity-0 translate-y-4">
+        {siteContent.community.label}
+      </span>
+      
+      <SectionTitle as="h2" class="text-3xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)] mb-8 leading-[1.1] whitespace-pre-line">
+        {siteContent.community.title}
+      </SectionTitle>
+
+      <p class="community-desc text-lg text-[var(--color-text-secondary)] font-secondary leading-relaxed opacity-0 translate-y-6">
+        {siteContent.community.description}
+      </p>
+    </div>
+
+    <!-- Events — editorial horizontal layout with large numbering -->
+    <div class="community-events flex flex-col">
+      {siteContent.community.events.map((event, index) => (
+        <article 
+          class={`community-event group flex flex-col md:flex-row md:items-baseline gap-4 md:gap-12 py-10 opacity-0 translate-y-6 ${index > 0 ? 'border-t border-[var(--color-border-subtle)]' : ''}`}
+          data-index={index}
+        >
+          <!-- Index number — large, decorative -->
+          <span class="text-5xl md:text-7xl font-display font-bold text-[var(--color-surface-elevated)] group-hover:text-[var(--color-accent-primary)] transition-colors duration-700 leading-none select-none">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          
+          <div class="flex flex-col md:flex-row md:items-baseline md:justify-between flex-1 gap-4">
+            <div class="flex flex-col gap-2">
+              <h3 class="text-xl md:text-2xl font-display text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors duration-500">
+                {event.name}
+              </h3>
+              <p class="text-sm text-[var(--color-text-secondary)] font-secondary max-w-sm">
+                {event.description}
+              </p>
+            </div>
+            
+            <span class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary whitespace-nowrap">
+              {event.day}
+            </span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+
+  const initCommunityAnimation = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      gsap.set('.community-label, .community-desc, .community-event', { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.to('.community-label', {
+      scrollTrigger: { trigger: '#community', start: 'top 70%' },
+      opacity: 1, y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    });
+
+    gsap.to('.community-desc', {
+      scrollTrigger: { trigger: '.community-desc', start: 'top 80%' },
+      opacity: 1, y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    });
+
+    gsap.utils.toArray('.community-event').forEach((event, i) => {
+      gsap.to(event as HTMLElement, {
+        scrollTrigger: { trigger: event as HTMLElement, start: 'top 88%' },
+        opacity: 1,
+        y: 0,
+        duration: DURATIONS.entrance,
+        ease: EASINGS.premiumEntrance,
+        delay: i * 0.08,
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initCommunityAnimation);
+</script>

@@ -1,0 +1,38 @@
+---
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  class?: string;
+  id?: string;
+}
+
+const { href, type = 'button', class: className, id } = Astro.props;
+
+const baseClasses = `
+  relative inline-flex items-center justify-center 
+  px-8 py-4 font-secondary text-sm tracking-widest uppercase
+  text-[var(--color-text-primary)] 
+  border border-[var(--color-border-subtle)]
+  overflow-hidden transition-all duration-300 ease-out
+  group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)]
+`;
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag 
+  href={href} 
+  type={href ? undefined : type}
+  class:list={[baseClasses, className]}
+  id={id}
+>
+  <!-- Background Glow Effect on Hover -->
+  <span class="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-glow-primary)] opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>
+  
+  <!-- Subtle inner border gradient -->
+  <span class="absolute inset-0 border border-transparent group-hover:border-[var(--color-border-subtle)] transition-colors duration-500"></span>
+
+  <span class="relative z-10 flex items-center gap-2 group-hover:-translate-y-0.5 transition-transform duration-300">
+    <slot />
+  </span>
+</Tag>

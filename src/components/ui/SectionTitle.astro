@@ -1,0 +1,47 @@
+---
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  class?: string;
+  id?: string;
+}
+
+const { as: Tag = 'h2', class: className = '', id } = Astro.props;
+---
+
+<Tag id={id} class:list={["section-title opacity-0 translate-y-8 font-display", className]}>
+  <slot />
+</Tag>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+
+  // Only animate if reduced motion is not preferred
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  if (!prefersReducedMotion) {
+    // A small delay to ensure DOM is ready
+    setTimeout(() => {
+      const titles = document.querySelectorAll('.section-title');
+      titles.forEach((title) => {
+        gsap.to(title, {
+          scrollTrigger: {
+            trigger: title,
+            start: "top 85%", // Trigger slightly before it comes into view
+          },
+          opacity: 1,
+          y: 0,
+          duration: DURATIONS.entrance,
+          ease: EASINGS.premiumEntrance,
+        });
+      });
+    }, 100);
+  } else {
+    // Fallback for reduced motion
+    const titles = document.querySelectorAll('.section-title');
+    titles.forEach((title) => {
+      title.classList.remove('opacity-0', 'translate-y-8');
+    });
+  }
+</script>
