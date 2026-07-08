@@ -1,0 +1,109 @@
+---
+import { siteContent } from '../../core/data/content';
+import SectionTitle from '../ui/SectionTitle.astro';
+---
+
+<section id="spaces" class="relative py-32 md:py-48 bg-[var(--color-bg-primary)] overflow-hidden z-20">
+  <div class="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
+    
+    <!-- Section Label -->
+    <span class="spaces-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-glow-secondary)] font-secondary mb-8 opacity-0 translate-y-4">
+      {siteContent.spaces.label}
+    </span>
+
+    <SectionTitle as="h2" class="text-3xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)] mb-16 leading-[1.1]">
+      {siteContent.spaces.title}
+    </SectionTitle>
+
+    <!-- Large Atmospheric Image -->
+    <div class="spaces-image relative w-full aspect-[21/9] rounded-2xl overflow-hidden mb-20 opacity-0">
+      <img 
+        src="/images/lounge.png"
+        alt="Lounge principal de Nebula Glitch — sillones, barra de especialidad, iluminación ambiental"
+        class="w-full h-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] via-transparent to-transparent opacity-60"></div>
+    </div>
+
+    <!-- Spaces Grid — 4 columns, minimal, text-only with accent borders -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
+      {siteContent.spaces.items.map((space, index) => (
+        <article 
+          class={`space-card group py-8 lg:px-8 opacity-0 translate-y-8 ${index > 0 ? 'border-t lg:border-t-0 lg:border-l border-[var(--color-border-subtle)]' : ''}`} 
+          data-index={index}
+        >
+          <span class="block text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary mb-6 group-hover:text-[var(--color-accent-primary)] transition-colors duration-500">
+            {space.tag}
+          </span>
+          <h3 class="text-xl md:text-2xl font-display text-[var(--color-text-primary)] mb-4 group-hover:text-[var(--color-accent-primary)] transition-colors duration-500">
+            {space.title}
+          </h3>
+          <p class="text-sm text-[var(--color-text-secondary)] font-secondary leading-relaxed">
+            {space.description}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+
+  const initSpacesAnimation = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      gsap.set('.spaces-label, .spaces-image, .space-card', { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.to('.spaces-label', {
+      scrollTrigger: { trigger: '#spaces', start: 'top 70%' },
+      opacity: 1, y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    });
+
+    // Image reveal with subtle scale
+    gsap.fromTo('.spaces-image', 
+      { opacity: 0, scale: 1.02 },
+      {
+        scrollTrigger: { trigger: '.spaces-image', start: 'top 75%' },
+        opacity: 1,
+        scale: 1,
+        duration: DURATIONS.transition,
+        ease: EASINGS.premiumEntrance,
+      }
+    );
+
+    // Subtle parallax on the image while scrolling
+    gsap.to('.spaces-image img', {
+      scrollTrigger: {
+        trigger: '.spaces-image',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      },
+      y: '-10%',
+      ease: 'none',
+    });
+
+    // Staggered card entrance
+    gsap.utils.toArray('.space-card').forEach((card, i) => {
+      gsap.to(card as HTMLElement, {
+        scrollTrigger: { trigger: card as HTMLElement, start: 'top 90%' },
+        opacity: 1,
+        y: 0,
+        duration: DURATIONS.entrance,
+        ease: EASINGS.premiumEntrance,
+        delay: i * 0.1,
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initSpacesAnimation);
+</script>

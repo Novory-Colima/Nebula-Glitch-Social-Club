@@ -1,0 +1,103 @@
+---
+import { siteContent } from '../../core/data/content';
+import SectionTitle from '../ui/SectionTitle.astro';
+---
+
+<section id="signature" class="relative py-32 md:py-48 bg-[var(--color-bg-primary)] z-10 overflow-hidden">
+  <div class="container mx-auto px-6 md:px-12 max-w-7xl">
+    
+    <!-- Section Label -->
+    <span class="signature-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-glow-secondary)] font-secondary mb-8 opacity-0 translate-y-4">
+      {siteContent.signature.label}
+    </span>
+
+    <!-- Editorial Layout: Hero image + typography-driven drink list -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-start">
+      
+      <!-- Left: Large editorial drink image -->
+      <div class="signature-hero-image lg:col-span-5 relative opacity-0">
+        <div class="relative aspect-[4/5] rounded-2xl overflow-hidden">
+          <img 
+            src="/images/signature.png"
+            alt="Pour-over de especialidad — preparación artesanal"
+            class="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)]/30 to-transparent"></div>
+        </div>
+      </div>
+
+      <!-- Right: Title + Drink List (typography-first, NOT cards) -->
+      <div class="lg:col-span-7 lg:pl-8">
+        <SectionTitle as="h2" class="text-3xl md:text-5xl font-light text-[var(--color-text-primary)] mb-16 leading-[1.1]">
+          {siteContent.signature.title}
+        </SectionTitle>
+
+        <div class="flex flex-col">
+          {siteContent.signature.drinks.map((drink, index) => (
+            <article class={`signature-drink group py-8 ${index > 0 ? 'border-t border-[var(--color-border-subtle)]' : ''} opacity-0 translate-y-6`} data-index={index}>
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                <div class="flex flex-col gap-3 max-w-md">
+                  <div class="flex items-center gap-4">
+                    <span class="text-xs uppercase tracking-[0.2em] text-[var(--color-accent-primary)] font-secondary">
+                      {drink.tag}
+                    </span>
+                    <span class="w-8 h-[1px] bg-[var(--color-border-subtle)]"></span>
+                  </div>
+                  <h3 class="text-2xl md:text-3xl font-display text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors duration-500">
+                    {drink.name}
+                  </h3>
+                </div>
+                <p class="text-[var(--color-text-secondary)] font-secondary text-sm leading-relaxed max-w-xs md:text-right">
+                  {drink.description}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+
+  const initSignatureAnimation = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      gsap.set('.signature-label, .signature-hero-image, .signature-drink', { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.to('.signature-label', {
+      scrollTrigger: { trigger: '#signature', start: 'top 70%' },
+      opacity: 1, y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    });
+
+    gsap.to('.signature-hero-image', {
+      scrollTrigger: { trigger: '#signature', start: 'top 60%' },
+      opacity: 1,
+      duration: DURATIONS.transition,
+      ease: EASINGS.premiumEntrance,
+    });
+
+    gsap.utils.toArray('.signature-drink').forEach((drink, i) => {
+      gsap.to(drink as HTMLElement, {
+        scrollTrigger: { trigger: drink as HTMLElement, start: 'top 85%' },
+        opacity: 1,
+        y: 0,
+        duration: DURATIONS.entrance,
+        ease: EASINGS.premiumEntrance,
+        delay: i * 0.1,
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initSignatureAnimation);
+</script>

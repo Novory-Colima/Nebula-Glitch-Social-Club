@@ -1,0 +1,97 @@
+---
+import SectionTitle from '../ui/SectionTitle.astro';
+
+const galleryImages = [
+  { src: '/images/gallery-1.png', alt: 'Latte art siendo vertido en taza de cerámica oscura', span: 'col-span-1 row-span-2' },
+  { src: '/images/gallery-2.png', alt: 'Flat white con agua mineral en superficie oscura', span: 'col-span-1 row-span-1' },
+  { src: '/images/gallery-3.png', alt: 'Barista preparando espresso en máquina profesional', span: 'col-span-1 row-span-1' },
+  { src: '/images/gallery-4.png', alt: 'Entrada de Nebula Glitch al atardecer', span: 'col-span-2 row-span-1' },
+];
+---
+
+<section id="gallery" class="relative py-32 md:py-48 bg-[var(--color-bg-secondary)] z-10 overflow-hidden">
+  <div class="container mx-auto px-6 md:px-12 max-w-7xl">
+    
+    <!-- Header — minimal, centered -->
+    <div class="text-center mb-20">
+      <span class="gallery-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-text-secondary)] font-secondary mb-8 opacity-0 translate-y-4">
+        Galería
+      </span>
+      <SectionTitle as="h2" class="text-3xl md:text-4xl font-light text-[var(--color-text-primary)]">
+        Momentos Nebula.
+      </SectionTitle>
+    </div>
+
+    <!-- Asymmetric Masonry Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 auto-rows-[280px] md:auto-rows-[320px] gap-4 md:gap-6">
+      {galleryImages.map((image, index) => (
+        <div 
+          class={`gallery-item relative rounded-xl overflow-hidden opacity-0 ${image.span} group`} 
+          data-index={index}
+        >
+          <img 
+            src={image.src}
+            alt={image.alt}
+            class="w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <!-- Subtle overlay that lifts on hover -->
+          <div class="absolute inset-0 bg-[var(--color-bg-primary)]/20 group-hover:bg-transparent transition-colors duration-700"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+
+  const initGalleryAnimation = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      gsap.set('.gallery-label, .gallery-item', { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.to('.gallery-label', {
+      scrollTrigger: { trigger: '#gallery', start: 'top 70%' },
+      opacity: 1, y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    });
+
+    gsap.utils.toArray('.gallery-item').forEach((item, i) => {
+      const el = item as HTMLElement;
+
+      // Entrance
+      gsap.fromTo(el, 
+        { opacity: 0, y: 60 },
+        {
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+          opacity: 1,
+          y: 0,
+          duration: DURATIONS.transition,
+          ease: EASINGS.premiumEntrance,
+          delay: i * 0.12,
+        }
+      );
+
+      // Individual parallax per image
+      gsap.to(el.querySelector('img'), {
+        scrollTrigger: {
+          trigger: el,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+        y: '-8%',
+        ease: 'none',
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initGalleryAnimation);
+</script>

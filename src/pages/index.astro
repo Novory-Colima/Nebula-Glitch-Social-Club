@@ -1,22 +1,38 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import DiscoverySection from '../components/sections/DiscoverySection.astro';
+import SignatureDrinksSection from '../components/sections/SignatureDrinksSection.astro';
+import MenuSection from '../components/sections/MenuSection.astro';
+import RoomsSection from '../components/sections/RoomsSection.astro';
+import GamingSection from '../components/sections/GamingSection.astro';
+import CommunitySection from '../components/sections/CommunitySection.astro';
+import GallerySection from '../components/sections/GallerySection.astro';
+import ClimaxSection from '../components/sections/ClimaxSection.astro';
+import FooterSection from '../components/sections/FooterSection.astro';
 ---
 
 <BaseLayout>
-  <main class="min-h-[200vh] flex flex-col items-center justify-center">
-    <div class="glass-panel p-12 text-center rounded-2xl max-w-2xl border border-[var(--color-border-subtle)]">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6 text-glow-primary text-balance text-[var(--color-text-primary)]">
-        Nebula Glitch Social Club
-      </h1>
-      <p class="text-[var(--color-text-secondary)] text-lg mb-8 font-secondary">
-        Project Foundation Initialized. Awaiting Phase 3 (Components Development).
-      </p>
-      
-      <div class="flex gap-4 justify-center">
-        <div class="w-3 h-3 rounded-full bg-[var(--color-accent-primary)] animate-pulse"></div>
-        <div class="w-3 h-3 rounded-full bg-[var(--color-glow-secondary)] animate-pulse delay-75"></div>
-        <div class="w-3 h-3 rounded-full bg-[var(--color-highlight)] animate-pulse delay-150"></div>
-      </div>
-    </div>
+  <main class="relative bg-[var(--color-bg-primary)] selection:bg-[var(--color-accent-primary)] selection:text-white">
+    <!-- 1. Contemplación — café primero -->
+    <HeroSection />
+    <!-- 2. Filosofía — por qué existimos -->
+    <DiscoverySection />
+    <!-- 3. Bebidas Signature — el producto estrella -->
+    <SignatureDrinksSection />
+    <!-- 4. Menú — la carta completa -->
+    <MenuSection />
+    <!-- 5. El Espacio — el lugar físico -->
+    <RoomsSection />
+    <!-- 6. Gaming — complemento discreto -->
+    <GamingSection />
+    <!-- 7. Comunidad — pertenencia y eventos -->
+    <CommunitySection />
+    <!-- 8. Galería — inmersión editorial -->
+    <GallerySection />
+    <!-- 9. CTA Final — invitación a descubrir -->
+    <ClimaxSection />
   </main>
+  <!-- 10. Footer — salida elegante -->
+  <FooterSection />
 </BaseLayout>

@@ -1,0 +1,136 @@
+---
+import { siteContent } from '../../core/data/content';
+---
+
+<footer id="footer" class="relative py-32 bg-[var(--color-bg-primary)] z-40 overflow-hidden border-t border-[var(--color-border-subtle)]">
+  
+  <div class="container mx-auto px-6 md:px-12 max-w-7xl">
+    
+    <!-- Top: Brand + Info Grid -->
+    <div class="footer-brand w-full grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-24 opacity-0 translate-y-8">
+      
+      <!-- Brand -->
+      <div class="md:col-span-5">
+        <h2 class="text-3xl md:text-4xl font-display font-bold text-[var(--color-text-primary)] mb-2">
+          {siteContent.footer.title}
+        </h2>
+        <p class="text-sm text-[var(--color-accent-primary)] font-secondary tracking-[0.15em] uppercase mb-6">
+          {siteContent.footer.subtitle}
+        </p>
+        <p class="text-[var(--color-text-secondary)] font-secondary text-sm max-w-xs leading-relaxed">
+          {siteContent.footer.description}
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="footer-links md:col-span-3 flex flex-col gap-3 opacity-0 translate-y-8">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary mb-2">Navegación</span>
+        {siteContent.footer.links.map((link) => (
+          <a href={`#${link.toLowerCase()}`} class="text-[var(--color-text-secondary)] font-secondary text-sm hover:text-[var(--color-accent-primary)] transition-colors duration-300">
+            {link}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Info -->
+      <div class="footer-info md:col-span-4 flex flex-col gap-6 opacity-0 translate-y-8">
+        <div>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary block mb-2">Horario</span>
+          <p class="text-sm text-[var(--color-text-primary)] font-secondary">{siteContent.footer.hours}</p>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary block mb-2">Ubicación</span>
+          <p class="text-sm text-[var(--color-text-primary)] font-secondary">{siteContent.footer.address}</p>
+        </div>
+        <div class="flex gap-6 mt-2">
+          {siteContent.footer.social.map((network) => (
+            <a href="#" class="text-xs uppercase tracking-[0.15em] text-[var(--color-text-secondary)] font-secondary hover:text-[var(--color-accent-primary)] transition-colors duration-300">
+              {network}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="footer-divider w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--color-border-subtle)] to-transparent mb-12 opacity-0"></div>
+
+    <!-- Copyright -->
+    <div class="footer-copy w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 opacity-0 translate-y-4">
+      <p class="text-[var(--color-text-secondary)] text-xs font-secondary opacity-50">
+        {siteContent.footer.copyright}
+      </p>
+      
+      <!-- Back to top -->
+      <button id="back-to-top" class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] text-xs font-secondary uppercase tracking-widest transition-colors duration-300">
+        Top ↑
+      </button>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+  import { getLenis } from '../../core/motion/ScrollManager';
+
+  const initFooterAnimation = () => {
+    // Back to top functionality
+    const backBtn = document.getElementById('back-to-top');
+    backBtn?.addEventListener('click', () => {
+      const lenis = getLenis();
+      if (lenis) {
+        lenis.scrollTo(0, { duration: 2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      gsap.set('.footer-brand, .footer-links, .footer-info, .footer-divider, .footer-copy', { opacity: 1, y: 0 });
+      return;
+    }
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#footer',
+        start: 'top 80%',
+      }
+    });
+
+    tl.to('.footer-brand', {
+      opacity: 1,
+      y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    })
+    .to('.footer-links', {
+      opacity: 1,
+      y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    }, "-=0.6")
+    .to('.footer-info', {
+      opacity: 1,
+      y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    }, "-=0.6")
+    .to('.footer-divider', {
+      opacity: 1,
+      duration: DURATIONS.transition,
+      ease: 'none',
+    }, "-=0.4")
+    .to('.footer-copy', {
+      opacity: 1,
+      y: 0,
+      duration: DURATIONS.entrance,
+      ease: EASINGS.smooth,
+    }, "-=0.8");
+  };
+
+  document.addEventListener('astro:page-load', initFooterAnimation);
+</script>
