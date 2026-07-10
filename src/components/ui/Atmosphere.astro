@@ -1,0 +1,118 @@
+---
+// src/components/ui/Atmosphere.astro
+---
+<canvas id="atmosphere-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40 mix-blend-screen"></canvas>
+
+<script>
+  const initAtmosphere = () => {
+    const canvas = document.getElementById('atmosphere-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    // Disable on mobile/reduced motion to save battery/performance
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 768) {
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const particles: Particle[] = [];
+    const particleCount = 40;
+
+    class Particle {
+      x: number;
+      y: number;
+      size: number;
+      speedY: number;
+      speedX: number;
+      opacity: number;
+      life: number;
+      maxLife: number;
+
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = height + Math.random() * 200;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedY = (Math.random() * 0.5 + 0.1) * -1;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.opacity = 0;
+        this.life = 0;
+        this.maxLife = Math.random() * 300 + 200;
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.life++;
+        
+        // Fade in and out based on life cycle
+        if (this.life < 50) {
+          this.opacity = (this.life / 50) * 0.5;
+        } else if (this.life > this.maxLife - 50) {
+          this.opacity = ((this.maxLife - this.life) / 50) * 0.5;
+        } else {
+          this.opacity = 0.5;
+        }
+
+        if (this.life >= this.maxLife || this.y < -10) {
+          this.reset();
+        }
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = height + 10;
+        this.life = 0;
+        this.opacity = 0;
+      }
+
+      draw() {
+        if (!ctx) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        // Bioluminescence color
+        ctx.fillStyle = `rgba(107, 90, 255, ${this.opacity})`;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(43, 213, 255, 0.8)';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    let animationFrameId: number;
+
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+      
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    const handleResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    document.addEventListener('astro:before-preparation', () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+    });
+  };
+
+  document.addEventListener('astro:page-load', initAtmosphere);
+</script>

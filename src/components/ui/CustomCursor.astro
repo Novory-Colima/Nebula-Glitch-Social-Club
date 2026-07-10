@@ -1,0 +1,76 @@
+---
+// src/components/ui/CustomCursor.astro
+---
+<div id="custom-cursor" class="fixed top-0 left-0 w-4 h-4 rounded-full bg-[var(--color-accent-primary)] pointer-events-none z-[9999] mix-blend-screen transition-transform duration-100 ease-out -translate-x-1/2 -translate-y-1/2 hidden md:block opacity-0">
+  <div id="cursor-label" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[9px] font-bold tracking-widest text-black opacity-0 uppercase whitespace-nowrap">
+  </div>
+</div>
+
+<script>
+  import gsap from 'gsap';
+
+  const initCursor = () => {
+    const cursor = document.getElementById('custom-cursor');
+    const label = document.getElementById('cursor-label');
+    if (!cursor || !label) return;
+    
+    // Check if device supports hover
+    const isTouch = matchMedia('(hover: none)').matches;
+    if (isTouch) return;
+
+    gsap.set(cursor, { opacity: 1 });
+
+    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const mouse = { x: pos.x, y: pos.y };
+    const speed = 0.2;
+
+    const xSet = gsap.quickSetter(cursor, "x", "px");
+    const ySet = gsap.quickSetter(cursor, "y", "px");
+
+    window.addEventListener("mousemove", e => {    
+      mouse.x = e.x;
+      mouse.y = e.y;  
+    });
+
+    gsap.ticker.add(() => {
+      const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio()); 
+      pos.x += (mouse.x - pos.x) * dt;
+      pos.y += (mouse.y - pos.y) * dt;
+      xSet(pos.x);
+      ySet(pos.y);
+    });
+
+    // Interactive elements logic
+    const interactives = document.querySelectorAll('a, button, .interactive');
+    interactives.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(cursor, {
+          scale: 3.5,
+          backgroundColor: '#F5F7FA',
+          mixBlendMode: 'difference',
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(cursor, {
+          scale: 1,
+          backgroundColor: 'var(--color-accent-primary)',
+          mixBlendMode: 'screen',
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initCursor);
+</script>
+
+<style is:global>
+  @media (hover: hover) and (pointer: fine) {
+    body, a, button, .interactive {
+      cursor: none;
+    }
+  }
+</style>

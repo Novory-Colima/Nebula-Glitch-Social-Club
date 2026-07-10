@@ -11,6 +11,10 @@ const {
   title = 'Nebula Glitch Social Club', 
   description = 'Cafetería premium de especialidad con diseño contemporáneo, tecnología integrada y gaming lounge — CDMX.' 
 } = Astro.props;
+
+import NoiseOverlay from '../components/ui/NoiseOverlay.astro';
+import CustomCursor from '../components/ui/CustomCursor.astro';
+import Atmosphere from '../components/ui/Atmosphere.astro';
 ---
 
 <!DOCTYPE html>
@@ -48,6 +52,10 @@ const {
     </script>
   </head>
   <body class="antialiased selection:bg-[var(--color-accent-primary)] selection:text-[var(--color-text-primary)]">
+    <Atmosphere />
+    <NoiseOverlay />
+    <CustomCursor />
+    
     <!-- Slot for Page Content -->
     <slot />
 

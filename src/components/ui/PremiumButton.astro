@@ -23,16 +23,95 @@ const Tag = href ? 'a' : 'button';
 <Tag 
   href={href} 
   type={href ? undefined : type}
-  class:list={[baseClasses, className]}
+  class:list={[baseClasses, className, 'magnetic-btn interactive']}
   id={id}
 >
+  <!-- Interactive Light Flare -->
+  <span class="btn-flare absolute w-16 h-16 rounded-full bg-white opacity-0 blur-[20px] pointer-events-none mix-blend-overlay -translate-x-1/2 -translate-y-1/2"></span>
   <!-- Background Glow Effect on Hover -->
   <span class="absolute inset-0 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-glow-primary)] opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>
   
   <!-- Subtle inner border gradient -->
   <span class="absolute inset-0 border border-transparent group-hover:border-[var(--color-border-subtle)] transition-colors duration-500"></span>
 
-  <span class="relative z-10 flex items-center gap-2 group-hover:-translate-y-0.5 transition-transform duration-300">
+  <span class="btn-content relative z-10 flex items-center gap-2 group-hover:-translate-y-0.5 transition-transform duration-300">
     <slot />
   </span>
 </Tag>
+
+<script>
+  import gsap from 'gsap';
+
+  const initMagneticButtons = () => {
+    if (matchMedia('(hover: none)').matches) return;
+
+    const buttons = document.querySelectorAll('.magnetic-btn');
+    
+    buttons.forEach((btn) => {
+      const b = btn as HTMLElement;
+      const flare = b.querySelector('.btn-flare') as HTMLElement;
+      const content = b.querySelector('.btn-content') as HTMLElement;
+
+      b.addEventListener('mousemove', (e) => {
+        const rect = b.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Magnetic pull
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const deltaX = x - centerX;
+        const deltaY = y - centerY;
+
+        gsap.to(b, {
+          x: deltaX * 0.3,
+          y: deltaY * 0.3,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+        
+        gsap.to(content, {
+          x: deltaX * 0.15,
+          y: deltaY * 0.15,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+
+        // Flare follow
+        if (flare) {
+          gsap.to(flare, {
+            x: x,
+            y: y,
+            opacity: 0.6,
+            duration: 0.2,
+          });
+        }
+      });
+
+      b.addEventListener('mouseleave', () => {
+        gsap.to(b, {
+          x: 0,
+          y: 0,
+          duration: 0.7,
+          ease: 'elastic.out(1, 0.3)'
+        });
+        
+        gsap.to(content, {
+          x: 0,
+          y: 0,
+          duration: 0.7,
+          ease: 'elastic.out(1, 0.3)'
+        });
+
+        if (flare) {
+          gsap.to(flare, {
+            opacity: 0,
+            duration: 0.4
+          });
+        }
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initMagneticButtons);
+</script>

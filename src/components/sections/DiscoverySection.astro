@@ -8,21 +8,23 @@ import SectionTitle from '../ui/SectionTitle.astro';
   <div class="absolute top-0 right-0 w-[50%] h-[50%] rounded-full bg-[var(--color-accent-primary)] blur-[200px] opacity-5 mix-blend-screen"></div>
 
   <div class="container mx-auto px-6 md:px-12 max-w-7xl">
-    <!-- Section Label -->
-    <span class="philosophy-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-secondary mb-8 opacity-0 translate-y-4">
-      {siteContent.philosophy.label}
-    </span>
+    <!-- Section Label with Parallax -->
+    <div class="overflow-hidden mb-8">
+      <span class="philosophy-label inline-block text-[11px] uppercase tracking-[0.3em] text-[var(--color-accent-primary)] font-secondary translate-y-full opacity-0">
+        {siteContent.philosophy.label}
+      </span>
+    </div>
 
     <!-- Asymmetric Layout: Image left (breaking grid), Text right -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
       
       <!-- Editorial Image — oversized, breaks left edge -->
-      <div class="philosophy-image lg:col-span-5 relative opacity-0">
-        <div class="relative aspect-[3/4] lg:-ml-12 rounded-2xl overflow-hidden">
+      <div class="lg:col-span-5 relative">
+        <div class="philosophy-image-wrapper relative aspect-[3/4] lg:-ml-12 rounded-2xl overflow-hidden" style="clip-path: inset(100% 0% 0% 0%);">
           <img 
             src="/images/philosophy.png"
             alt="Granos de café de especialidad — proceso de selección y tueste artesanal"
-            class="w-full h-full object-cover"
+            class="philosophy-image w-full h-full object-cover scale-125 origin-center"
             loading="lazy"
             decoding="async"
           />
@@ -33,13 +35,17 @@ import SectionTitle from '../ui/SectionTitle.astro';
 
       <!-- Text Content -->
       <div class="lg:col-span-7 flex flex-col gap-10 lg:pt-16">
-        <SectionTitle as="h2" class="text-3xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)] leading-[1.1] whitespace-pre-line">
-          {siteContent.philosophy.title}
-        </SectionTitle>
+        <div class="philosophy-title-wrapper">
+          <SectionTitle as="h2" class="philosophy-title text-3xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)] leading-[1.1] whitespace-pre-line opacity-0 translate-y-8">
+            {siteContent.philosophy.title}
+          </SectionTitle>
+        </div>
         
-        <p class="philosophy-text text-lg md:text-xl text-[var(--color-text-secondary)] font-secondary leading-relaxed max-w-xl opacity-0 translate-y-8">
-          {siteContent.philosophy.description}
-        </p>
+        <div class="overflow-hidden">
+          <p class="philosophy-text text-lg md:text-xl text-[var(--color-text-secondary)] font-secondary leading-relaxed max-w-xl opacity-0 translate-y-full">
+            {siteContent.philosophy.description}
+          </p>
+        </div>
 
         <!-- Stats — horizontal, typographic -->
         <div class="philosophy-stats flex flex-wrap gap-12 md:gap-16 mt-8 opacity-0 translate-y-8">
@@ -67,40 +73,86 @@ import SectionTitle from '../ui/SectionTitle.astro';
   const initPhilosophyAnimation = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      gsap.set('.philosophy-label, .philosophy-text, .philosophy-stats, .philosophy-image', { opacity: 1, y: 0 });
+      gsap.set('.philosophy-label, .philosophy-title, .philosophy-text, .philosophy-stats', { opacity: 1, y: 0 });
+      gsap.set('.philosophy-image-wrapper', { clipPath: 'inset(0% 0% 0% 0%)' });
+      gsap.set('.philosophy-image', { scale: 1 });
       return;
     }
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: '#philosophy',
-        start: 'top 60%',
+        start: 'top 70%',
       }
     });
 
     tl.to('.philosophy-label', {
       opacity: 1,
-      y: 0,
+      y: '0%',
       duration: DURATIONS.entrance,
       ease: EASINGS.smooth,
     })
-    .to('.philosophy-image', {
-      opacity: 1,
-      duration: DURATIONS.transition,
-      ease: EASINGS.premiumEntrance,
+    .to('.philosophy-image-wrapper', {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      duration: 1.5,
+      ease: "power4.inOut",
     }, "-=0.4")
-    .to('.philosophy-text', {
+    .to('.philosophy-image', {
+      scale: 1,
+      duration: 2,
+      ease: "power2.out",
+    }, "<")
+    .to('.philosophy-title', {
       opacity: 1,
       y: 0,
+      duration: 1,
+      ease: EASINGS.premiumEntrance,
+    }, "-=1.5")
+    .to('.philosophy-text', {
+      opacity: 1,
+      y: '0%',
       duration: DURATIONS.entrance,
       ease: EASINGS.smooth,
-    }, "-=0.8")
+    }, "-=1.2")
     .to('.philosophy-stats', {
       opacity: 1,
       y: 0,
       duration: DURATIONS.entrance,
       ease: EASINGS.premiumEntrance,
-    }, "-=0.4");
+    }, "-=0.8");
+
+    // Parallax on the label
+    gsap.to('.philosophy-label', {
+      y: '-30px',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#philosophy',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+
+    // Skew on scroll velocity
+    let proxy = { skew: 0 },
+        skewSetter = gsap.quickSetter(".philosophy-image-wrapper, .philosophy-title-wrapper", "skewY", "deg"),
+        clamp = gsap.utils.clamp(-5, 5);
+
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        let skew = clamp(self.getVelocity() / -300);
+        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+          proxy.skew = skew;
+          gsap.to(proxy, {
+            skew: 0,
+            duration: 0.8,
+            ease: "power3",
+            overwrite: true,
+            onUpdate: () => skewSetter(proxy.skew)
+          });
+        }
+      }
+    });
   };
 
   document.addEventListener('astro:page-load', initPhilosophyAnimation);
