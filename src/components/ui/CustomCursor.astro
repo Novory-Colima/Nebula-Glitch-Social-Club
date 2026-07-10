@@ -27,9 +27,22 @@
     const xSet = gsap.quickSetter(cursor, "x", "px");
     const ySet = gsap.quickSetter(cursor, "y", "px");
 
+    let isMagnetic = false;
+    let targetMagnetic: HTMLElement | null = null;
+
     window.addEventListener("mousemove", e => {    
-      mouse.x = e.x;
-      mouse.y = e.y;  
+      if (!isMagnetic) {
+        mouse.x = e.x;
+        mouse.y = e.y;
+      } else if (targetMagnetic) {
+        // Magnetic pull for CURSOR only, button moves itself
+        const rect = targetMagnetic.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        // Snap cursor strongly to the center of the button with slight mouse tracking
+        mouse.x = centerX + (e.x - centerX) * 0.1;
+        mouse.y = centerY + (e.y - centerY) * 0.1;
+      }
     });
 
     gsap.ticker.add(() => {
@@ -51,6 +64,11 @@
           duration: 0.3,
           ease: "power2.out"
         });
+        
+        if (el.classList.contains('magnetic')) {
+          isMagnetic = true;
+          targetMagnetic = el as HTMLElement;
+        }
       });
       el.addEventListener('mouseleave', () => {
         gsap.to(cursor, {
@@ -60,6 +78,16 @@
           duration: 0.3,
           ease: "power2.out"
         });
+        
+        if (isMagnetic && targetMagnetic === el) {
+          isMagnetic = false;
+          gsap.to(targetMagnetic, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+          targetMagnetic = null;
+          
+          // Instantly snap mouse back to real position to prevent jump
+          // Actually, we can't get real mouse pos here unless we tracked it separately,
+          // it will sync on next mousemove.
+        }
       });
     });
   };

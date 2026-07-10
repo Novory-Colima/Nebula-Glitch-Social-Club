@@ -57,26 +57,24 @@ import PremiumButton from '../ui/PremiumButton.astro';
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { EASINGS, DURATIONS } from '../../core/motion/tokens';
+  import { TextDecoder } from '../../core/motion/TextDecoder';
 
   const initHeroAnimation = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const title = document.querySelector('.hero-title');
     
     if (prefersReducedMotion) {
-      if (title) title.innerHTML = title.textContent || '';
       gsap.set('.hero-subtitle span, .hero-tagline span', { y: 0, opacity: 1 });
       gsap.set('.hero-actions, .hero-scroll', { opacity: 1 });
       return;
     }
 
-    // Text splitting logic for hero title
-    if (title && title.textContent) {
-      const words = title.textContent.trim().split(' ');
-      title.innerHTML = words.map(word => 
-        `<span class="inline-block overflow-hidden pb-2"><span class="title-word inline-block translate-y-full opacity-0 rotate-[4deg] origin-top-left">${word}&nbsp;</span></span>`
-      ).join('');
-    }
+    if (!title) return;
 
+    // Set initial state for animated elements
+    gsap.set(title, { opacity: 0 });
+
+    const decoder = new TextDecoder(title as HTMLElement);
     const tl = gsap.timeline({ defaults: { ease: EASINGS.premiumEntrance } });
 
     // Cinematic Reveal
@@ -85,34 +83,33 @@ import PremiumButton from '../ui/PremiumButton.astro';
       duration: 2.5,
       ease: "power2.out"
     })
-    .to('.title-word', {
-      y: '0%',
+    .to(title, {
       opacity: 1,
-      rotate: 0,
-      duration: 1.2,
-      stagger: 0.1,
-      ease: EASINGS.premiumEntrance
-    }, "-=2.0")
+      duration: 0.1,
+      onStart: () => {
+        decoder.decode(1.5, 0);
+      }
+    }, 0.3)
     .to('.hero-subtitle span', {
       y: '0%',
       opacity: 1,
       duration: 1,
       ease: "power3.out"
-    }, "-=1.0")
+    }, 1.2)
     .to('.hero-tagline span', {
       y: '0%',
       opacity: 1,
       duration: 1,
       ease: "power3.out"
-    }, "-=0.8")
+    }, 1.4)
     .to('.hero-actions', {
       opacity: 1,
       duration: 1,
-    }, "-=0.6")
+    }, 1.6)
     .to('.hero-scroll', {
       opacity: 1,
       duration: DURATIONS.entrance,
-    }, "-=0.4");
+    }, 1.8);
 
     // Parallax on Scroll
     gsap.to('.parallax-bg', {
