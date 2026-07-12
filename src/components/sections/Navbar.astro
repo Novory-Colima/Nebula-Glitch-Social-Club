@@ -1,0 +1,291 @@
+---
+// src/components/sections/Navbar.astro
+import PremiumButton from '../ui/PremiumButton.astro';
+
+const navLinks = [
+  { href: '#philosophy', label: 'Filosofía' },
+  { href: '#signature', label: 'Bebidas' },
+  { href: '#menu', label: 'Menú' },
+  { href: '#spaces', label: 'Espacios' },
+  { href: '#gaming', label: 'Gaming' },
+  { href: '#community', label: 'Comunidad' },
+  { href: '#gallery', label: 'Galería' }
+];
+---
+
+<header id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 glass-panel border-b border-[var(--color-border-subtle)] translate-y-0 opacity-100">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+    <!-- Brand / Logo -->
+    <a href="#" id="navbar-logo" class="relative z-50 text-xl font-display font-bold tracking-[0.2em] text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded px-2 py-1">
+      NEBULA GLITCH
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-8" aria-label="Navegación principal">
+      {navLinks.map((link) => (
+        <a 
+          href={link.href} 
+          class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] transition-colors duration-300 font-secondary py-2 focus-visible:outline-none focus-visible:underline decoration-2 underline-offset-8 decoration-[var(--color-accent-primary)]"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Right Side CTA -->
+    <div class="hidden lg:block">
+      <PremiumButton class="booking-trigger px-5 py-2 text-xs" href="#booking">
+        Reservar
+      </PremiumButton>
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button 
+      id="mobile-menu-toggle" 
+      class="lg:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded" 
+      aria-label="Abrir menú" 
+      aria-expanded="false"
+      aria-controls="mobile-drawer"
+    >
+      <span class="hamburger-line w-6 h-[2px] bg-current transition-transform duration-300 ease-out origin-center"></span>
+      <span class="hamburger-line w-6 h-[2px] bg-current transition-opacity duration-200 ease-out"></span>
+      <span class="hamburger-line w-6 h-[2px] bg-current transition-transform duration-300 ease-out origin-center"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Navigation Drawer Overlay -->
+  <div 
+    id="mobile-drawer" 
+    class="fixed inset-0 w-full h-screen bg-[var(--color-bg-primary)] z-40 hidden flex-col justify-between p-12 pt-32" 
+    aria-hidden="true"
+  >
+    <!-- Background glitch glow inside drawer -->
+    <div class="absolute bottom-0 right-0 w-[80vw] h-[80vw] rounded-full bg-[var(--color-glow-primary)] blur-[150px] opacity-10 mix-blend-screen pointer-events-none"></div>
+
+    <nav class="flex flex-col gap-6" aria-label="Navegación móvil">
+      {navLinks.map((link) => (
+        <div class="mobile-nav-item opacity-0 translate-y-4">
+          <a 
+            href={link.href} 
+            class="mobile-nav-link text-3xl md:text-4xl font-display uppercase tracking-wider text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] transition-colors duration-300 py-2 block focus-visible:outline-none focus-visible:text-[var(--color-accent-primary)]"
+          >
+            {link.label}
+          </a>
+        </div>
+      ))}
+    </nav>
+
+    <div class="mobile-nav-item opacity-0 translate-y-4 flex flex-col gap-8">
+      <PremiumButton class="booking-trigger w-full py-4 text-center justify-center" href="#booking">
+        Reservar experiencia
+      </PremiumButton>
+      
+      <!-- Info Footer inside Mobile Drawer -->
+      <div class="flex flex-col gap-2 border-t border-[var(--color-border-subtle)] pt-6">
+        <span class="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-secondary">Horario</span>
+        <p class="text-xs text-[var(--color-text-primary)] font-secondary">Lun – Dom · 7:00 AM – 11:00 PM</p>
+        <span class="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-secondary mt-2">Ubicación</span>
+        <p class="text-xs text-[var(--color-text-primary)] font-secondary">Col. Roma Norte, CDMX</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  import gsap from 'gsap';
+  import { getLenis } from '../../core/motion/ScrollManager';
+
+  const initNavbar = () => {
+    const navbar = document.getElementById('navbar');
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const drawer = document.getElementById('mobile-drawer');
+    const lines = document.querySelectorAll('.hamburger-line');
+    const items = document.querySelectorAll('.mobile-nav-item');
+    const links = document.querySelectorAll('.mobile-nav-link, .booking-trigger');
+    const logo = document.getElementById('navbar-logo');
+
+    if (!navbar || !toggle || !drawer) return;
+
+    let isOpen = false;
+
+    // Scroll effect (hide/show/blur)
+    let lastScrollY = window.scrollY;
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (isOpen) return;
+
+      if (currentScrollY > 50) {
+        navbar.classList.add('py-2');
+        navbar.classList.remove('py-4');
+      } else {
+        navbar.classList.add('py-4');
+        navbar.classList.remove('py-2');
+      }
+
+      // Hide on scroll down, show on scroll up
+      if (currentScrollY > 150 && currentScrollY > lastScrollY) {
+        // Scrolling down
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        // Scrolling up
+        navbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Lock/Unlock Scroll using Lenis
+    const setScrollLock = (lock: boolean) => {
+      const lenis = getLenis();
+      if (lock) {
+        if (lenis) lenis.stop();
+        document.body.style.overflow = 'hidden';
+      } else {
+        if (lenis) lenis.start();
+        document.body.style.overflow = '';
+      }
+    };
+
+    // Open/Close Drawer Function
+    const toggleDrawer = () => {
+      isOpen = !isOpen;
+      
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (isOpen) {
+        drawer.classList.remove('hidden');
+        drawer.classList.add('flex');
+        setScrollLock(true);
+
+        if (prefersReducedMotion) {
+          gsap.set(drawer, { opacity: 1 });
+          gsap.set(items, { opacity: 1, y: 0 });
+          // Cross animation
+          lines[0].style.transform = 'translateY(8px) rotate(45deg)';
+          lines[1].style.opacity = '0';
+          lines[2].style.transform = 'translateY(-8px) rotate(-45deg)';
+        } else {
+          // Play GSAP open animations
+          gsap.fromTo(drawer, 
+            { opacity: 0 }, 
+            { opacity: 1, duration: 0.4, ease: 'power2.out' }
+          );
+
+          gsap.fromTo(items, 
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.08, delay: 0.2 }
+          );
+
+          // Animate lines to X
+          gsap.to(lines[0], { y: 8, rotate: 45, duration: 0.3, ease: 'power2.inOut' });
+          gsap.to(lines[1], { opacity: 0, duration: 0.2 });
+          gsap.to(lines[2], { y: -8, rotate: -45, duration: 0.3, ease: 'power2.inOut' });
+        }
+      } else {
+        setScrollLock(false);
+
+        if (prefersReducedMotion) {
+          drawer.classList.add('hidden');
+          drawer.classList.remove('flex');
+          gsap.set(items, { opacity: 0, y: 20 });
+          // Reset lines
+          lines[0].style.transform = '';
+          lines[1].style.opacity = '1';
+          lines[2].style.transform = '';
+        } else {
+          // Play GSAP close animations
+          gsap.to(drawer, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.in',
+            onComplete: () => {
+              drawer.classList.add('hidden');
+              drawer.classList.remove('flex');
+            }
+          });
+
+          // Reset lines
+          gsap.to(lines[0], { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
+          gsap.to(lines[1], { opacity: 1, duration: 0.2 });
+          gsap.to(lines[2], { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
+        }
+      }
+    };
+
+    toggle.addEventListener('click', toggleDrawer);
+
+    // Close mobile menu when clicking a link
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        
+        // Handle scroll behavior to correct anchor
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          
+          if (isOpen) toggleDrawer();
+
+          const targetId = href.substring(1);
+          if (targetId === 'booking') return; // Modal trigger, handoff handled separately
+          
+          const target = document.getElementById(targetId);
+          if (target) {
+            const lenis = getLenis();
+            const navbarOffset = navbar.getBoundingClientRect().height;
+            if (lenis) {
+              lenis.scrollTo(target, { offset: -navbarOffset, duration: 1.5 });
+            } else {
+              window.scrollTo({
+                top: target.offsetTop - navbarOffset,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }
+      });
+    });
+
+    // Close when logo is clicked (scroll to top)
+    logo?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (isOpen) toggleDrawer();
+      const lenis = getLenis();
+      if (lenis) {
+        lenis.scrollTo(0, { duration: 1.5 });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    // Close on ESC key press
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        toggleDrawer();
+        toggle.focus();
+      }
+    });
+
+    // Close on resize if switching to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024 && isOpen) {
+        toggleDrawer();
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initNavbar);
+</script>
+
+<style>
+  #navbar {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), py 0.3s ease, background-color 0.3s ease;
+  }
+</style>

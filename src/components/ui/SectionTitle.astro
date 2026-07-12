@@ -17,31 +17,30 @@ const { as: Tag = 'h2', class: className = '', id } = Astro.props;
   import ScrollTrigger from 'gsap/ScrollTrigger';
   import { EASINGS, DURATIONS } from '../../core/motion/tokens';
 
-  // Only animate if reduced motion is not preferred
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  if (!prefersReducedMotion) {
-    // A small delay to ensure DOM is ready
-    setTimeout(() => {
-      const titles = document.querySelectorAll('.section-title');
-      titles.forEach((title) => {
-        gsap.to(title, {
-          scrollTrigger: {
-            trigger: title,
-            start: "top 85%", // Trigger slightly before it comes into view
-          },
-          opacity: 1,
-          y: 0,
-          duration: DURATIONS.entrance,
-          ease: EASINGS.premiumEntrance,
-        });
-      });
-    }, 100);
-  } else {
-    // Fallback for reduced motion
+  const initTitles = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const titles = document.querySelectorAll('.section-title');
+    
+    if (prefersReducedMotion) {
+      titles.forEach((title) => {
+        title.classList.remove('opacity-0', 'translate-y-8');
+      });
+      return;
+    }
+
     titles.forEach((title) => {
-      title.classList.remove('opacity-0', 'translate-y-8');
+      gsap.to(title, {
+        scrollTrigger: {
+          trigger: title,
+          start: "top 85%", // Trigger slightly before it comes into view
+        },
+        opacity: 1,
+        y: 0,
+        duration: DURATIONS.entrance,
+        ease: EASINGS.premiumEntrance,
+      });
     });
-  }
+  };
+
+  document.addEventListener('astro:page-load', initTitles);
 </script>

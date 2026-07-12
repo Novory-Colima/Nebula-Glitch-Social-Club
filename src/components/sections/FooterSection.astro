@@ -25,11 +25,27 @@ import { siteContent } from '../../core/data/content';
       <!-- Navigation -->
       <nav class="footer-links md:col-span-3 flex flex-col gap-3 opacity-0 translate-y-8">
         <span class="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-secondary mb-2">Navegación</span>
-        {siteContent.footer.links.map((link) => (
-          <a href={`#${link.toLowerCase()}`} class="text-[var(--color-text-secondary)] font-secondary text-sm hover:text-[var(--color-accent-primary)] transition-colors duration-300">
-            {link}
-          </a>
-        ))}
+        {siteContent.footer.links.map((link) => {
+          const lower = link.toLowerCase();
+          const isReservar = lower === 'reservar';
+          let href = `#${lower}`;
+          if (lower === 'menú') href = '#menu';
+          else if (lower === 'espacios') href = '#spaces';
+          else if (lower === 'eventos') href = '#community';
+          else if (isReservar) href = '#booking';
+
+          return (
+            <a 
+              href={href} 
+              class:list={[
+                "text-[var(--color-text-secondary)] font-secondary text-sm hover:text-[var(--color-accent-primary)] transition-colors duration-300 focus-visible:outline-none focus-visible:text-[var(--color-accent-primary)]",
+                isReservar ? "booking-trigger" : ""
+              ]}
+            >
+              {link}
+            </a>
+          );
+        })}
       </nav>
 
       <!-- Info -->
@@ -44,7 +60,7 @@ import { siteContent } from '../../core/data/content';
         </div>
         <div class="flex gap-6 mt-2">
           {siteContent.footer.social.map((network) => (
-            <a href="#" class="text-xs uppercase tracking-[0.15em] text-[var(--color-text-secondary)] font-secondary hover:text-[var(--color-accent-primary)] transition-colors duration-300">
+            <a href="#" class="social-link text-xs uppercase tracking-[0.15em] text-[var(--color-text-secondary)] font-secondary hover:text-[var(--color-accent-primary)] transition-colors duration-300 focus-visible:outline-none focus-visible:text-[var(--color-accent-primary)]">
               {network}
             </a>
           ))}
@@ -62,7 +78,7 @@ import { siteContent } from '../../core/data/content';
       </p>
       
       <!-- Back to top -->
-      <button id="back-to-top" class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] text-xs font-secondary uppercase tracking-widest transition-colors duration-300">
+      <button id="back-to-top" class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] text-xs font-secondary uppercase tracking-widest transition-colors duration-300 focus-visible:outline-none focus-visible:text-[var(--color-accent-primary)]">
         Top ↑
       </button>
     </div>
@@ -86,6 +102,20 @@ import { siteContent } from '../../core/data/content';
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+    });
+
+    // Social links demo toast triggers
+    const socialLinks = document.querySelectorAll('.social-link');
+    socialLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('show-toast', {
+          detail: {
+            title: "Redes Sociales",
+            message: "Esta es una de demostración de portafolio. Las redes sociales oficiales no están vinculadas."
+          }
+        }));
+      });
     });
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
