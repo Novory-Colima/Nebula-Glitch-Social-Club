@@ -26,7 +26,7 @@ const galleryImages = [
     <div class="grid grid-cols-1 md:grid-cols-3 auto-rows-[280px] md:auto-rows-[320px] gap-4 md:gap-6">
       {galleryImages.map((image, index) => (
         <div 
-          class={`gallery-item relative rounded-xl overflow-hidden opacity-0 ${image.span} group`} 
+          class={`gallery-item relative rounded-xl overflow-hidden opacity-0 ${image.span} group will-change-transform`} 
           data-index={index}
         >
           <img 
@@ -37,7 +37,7 @@ const galleryImages = [
             decoding="async"
           />
           <!-- Subtle overlay that lifts on hover -->
-          <div class="absolute inset-0 bg-[var(--color-bg-primary)]/20 group-hover:bg-transparent transition-colors duration-700"></div>
+          <div class="absolute inset-0 bg-[var(--color-bg-primary)]/20 group-hover:bg-transparent transition-colors duration-700 pointer-events-none"></div>
         </div>
       ))}
     </div>
@@ -63,7 +63,9 @@ const galleryImages = [
       ease: EASINGS.smooth,
     });
 
-    gsap.utils.toArray('.gallery-item').forEach((item, i) => {
+    const items = gsap.utils.toArray('.gallery-item');
+    
+    items.forEach((item, i) => {
       const el = item as HTMLElement;
 
       // Entrance
@@ -90,6 +92,29 @@ const galleryImages = [
         y: '-8%',
         ease: 'none',
       });
+    });
+
+    // Skew-on-Scroll (Deformación por Inercia y Velocidad)
+    let proxy = { skew: 0 };
+    const skewSetter = gsap.quickSetter(items, "skewY", "deg");
+    const clamp = gsap.utils.clamp(-6, 6);
+
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const skew = clamp(self.getVelocity() / -200);
+        
+        // Only skew if the velocity is significant enough, to avoid micro-jitters
+        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+          proxy.skew = skew;
+          gsap.to(proxy, {
+            skew: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            overwrite: true,
+            onUpdate: () => skewSetter(proxy.skew)
+          });
+        }
+      }
     });
   };
 

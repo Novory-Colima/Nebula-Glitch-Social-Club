@@ -1,41 +1,58 @@
 ---
 import { siteContent } from '../../core/data/content';
 import PremiumButton from '../ui/PremiumButton.astro';
+
+const collageImages = [
+  { src: '/images/gallery-1.png', classes: 'w-48 h-64 md:w-64 md:h-80 -rotate-6' },
+  { src: '/images/gallery-4.png', classes: 'w-56 h-40 md:w-72 md:h-56 rotate-3' },
+  { src: '/images/lounge.png', classes: 'w-64 h-64 md:w-80 md:h-80 rotate-12' },
+  { src: '/images/signature.png', classes: 'w-40 h-56 md:w-56 md:h-72 -rotate-12' },
+];
 ---
 
-<section id="cta" class="relative min-h-[80vh] flex items-center justify-center bg-[var(--color-bg-primary)] z-30 overflow-hidden">
+<section id="climax" class="relative bg-[var(--color-bg-primary)] z-30 overflow-hidden min-h-screen">
   
-  <!-- Intense Lighting Base -->
-  <div class="absolute inset-0 z-0">
-    <!-- Grid overlay for subtle tech feel -->
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+  <div id="climax-pin-container" class="relative w-full h-screen flex items-center justify-center">
     
-    <!-- Central intense glow -->
-    <div class="cta-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full bg-[var(--color-accent-primary)] blur-[150px] opacity-10 mix-blend-screen scale-50"></div>
+    <!-- Background transition layers -->
+    <div class="climax-bg absolute inset-0 bg-black z-0 opacity-0"></div>
+    <div class="climax-glow absolute inset-0 bg-gradient-to-b from-[#06070B] to-[#0A061E] z-0 opacity-0 mix-blend-screen"></div>
     
-    <!-- Floating atmospheric particles -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-[20%] left-[20%] w-2 h-2 rounded-full bg-[var(--color-highlight)] blur-[2px] animate-pulse"></div>
-      <div class="absolute top-[70%] left-[80%] w-3 h-3 rounded-full bg-[var(--color-glow-secondary)] blur-[3px] animate-pulse [animation-delay:300ms]"></div>
-      <div class="absolute top-[40%] left-[70%] w-1 h-1 rounded-full bg-[var(--color-text-primary)] blur-[1px] animate-pulse [animation-delay:700ms]"></div>
-    </div>
-  </div>
-
-  <div class="container relative z-10 mx-auto px-6 max-w-4xl text-center">
-    <h2 class="cta-title text-5xl md:text-7xl lg:text-8xl font-display font-bold text-[var(--color-text-primary)] mb-8 tracking-tight">
-      {siteContent.cta.title}
-    </h2>
-    
-    <div class="cta-text-wrapper overflow-hidden mt-8">
-      <p class="cta-text text-lg md:text-2xl text-[var(--color-text-secondary)] font-secondary font-light leading-relaxed max-w-2xl mx-auto">
-        {siteContent.cta.description}
+    <!-- Phase 1: Transition Screen (Eye-closing Dissolve) -->
+    <div class="transition-text-wrapper absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+      <p class="transition-text text-2xl md:text-4xl text-white font-secondary font-light opacity-0 text-center tracking-widest px-6">
+        Desconecta del exterior.
+        <br/><span class="block mt-4 text-[var(--color-accent-primary)] font-display text-3xl md:text-5xl italic">Conecta con tu interior.</span>
       </p>
     </div>
 
-    <div class="cta-button mt-12 opacity-0 translate-y-4">
-      <PremiumButton class="booking-trigger" id="climax-booking-btn">
-        {siteContent.cta.button}
-      </PremiumButton>
+    <!-- Phase 2: Converging Collage -->
+    <div class="collage-container absolute inset-0 z-20 flex items-center justify-center pointer-events-none perspective-[1000px]">
+      <div class="collage-center relative w-0 h-0 flex items-center justify-center">
+        {collageImages.map((img, i) => (
+          <div class={`collage-item absolute rounded-xl overflow-hidden shadow-2xl opacity-0 ${img.classes}`} data-index={i}>
+            <img src={img.src} class="w-full h-full object-cover scale-[1.2] collage-img" alt="Nebula Climax" />
+            <div class="absolute inset-0 bg-black/40 mix-blend-multiply collage-overlay"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Phase 3: Final CTA -->
+    <div class="cta-content absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none opacity-0">
+      <div class="bg-[var(--color-bg-primary)]/40 backdrop-blur-md border border-[var(--color-border-subtle)]/50 p-12 md:p-20 rounded-3xl text-center max-w-4xl mx-4 shadow-[0_0_50px_rgba(107,90,255,0.1)]">
+        <h2 class="text-4xl md:text-6xl lg:text-8xl font-display font-bold text-[var(--color-text-primary)] mb-6 tracking-tight drop-shadow-xl">
+          {siteContent.cta.title}
+        </h2>
+        <p class="text-lg md:text-2xl text-[var(--color-text-secondary)] font-secondary font-light leading-relaxed max-w-2xl mx-auto mb-10 drop-shadow-md">
+          {siteContent.cta.description}
+        </p>
+        <div class="pointer-events-auto">
+          <PremiumButton class="booking-trigger" id="climax-booking-btn">
+            {siteContent.cta.button}
+          </PremiumButton>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -43,78 +60,85 @@ import PremiumButton from '../ui/PremiumButton.astro';
 <script>
   import gsap from 'gsap';
   import ScrollTrigger from 'gsap/ScrollTrigger';
-  import { EASINGS, DURATIONS } from '../../core/motion/tokens';
 
-  const initCtaAnimation = () => {
+  const initClimaxAnimation = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      gsap.set('.cta-button', { opacity: 1, y: 0 });
+      gsap.set('.cta-content', { opacity: 1 });
+      gsap.set('.collage-item', { opacity: 0.5 });
       return;
     }
 
-    // Expand the glow as the user scrolls into the section
-    gsap.to('.cta-glow', {
+    const pinContainer = document.getElementById('climax-pin-container');
+    if (!pinContainer) return;
+
+    const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: '#cta',
-        start: 'top 80%',
-        end: 'center center',
+        trigger: "#climax",
+        start: "top top",
+        end: "+=300%",
+        pin: true,
         scrub: 1,
-      },
-      scale: 1.5,
-      opacity: 0.3,
-      ease: 'none',
+      }
     });
 
-    // Title reveal
-    gsap.fromTo('.cta-title', 
-      { 
-        opacity: 0, 
-        scale: 0.9,
-        y: 50
-      },
-      {
-        scrollTrigger: {
-          trigger: '#cta',
-          start: 'top 60%',
-        },
-        opacity: 1,
+    // 1. Eye closing dissolve
+    tl.to('.climax-bg', { opacity: 1, duration: 1 })
+      .to('.transition-text', { opacity: 1, y: -20, duration: 1, ease: 'power2.out' }, '<')
+      .to({}, { duration: 1 }) // Empty tween for reading time
+      .to('.transition-text', { opacity: 0, filter: 'blur(10px)', y: -40, duration: 1, ease: 'power2.in' });
+
+    // 2. Converging Collage and Dark Inversion
+    const items = gsap.utils.toArray('.collage-item');
+    
+    // Set initial random out-of-screen positions for collage items
+    items.forEach((item, i) => {
+      const el = item as HTMLElement;
+      let startX, startY;
+      if (i === 0) { startX = -window.innerWidth; startY = -window.innerHeight; }
+      else if (i === 1) { startX = window.innerWidth; startY = -window.innerHeight; }
+      else if (i === 2) { startX = -window.innerWidth; startY = window.innerHeight; }
+      else { startX = window.innerWidth; startY = window.innerHeight; }
+      
+      gsap.set(el, { x: startX, y: startY, rotationZ: (Math.random() - 0.5) * 90, scale: 2, opacity: 0 });
+    });
+
+    tl.to('.climax-glow', { opacity: 1, duration: 2 }, 'collage')
+      .to(items, {
+        x: (i) => i === 0 ? -150 : i === 1 ? 150 : i === 2 ? -100 : 120, // Spread them slightly from center
+        y: (i) => i === 0 ? -100 : i === 1 ? -120 : i === 2 ? 100 : 80,
+        rotationZ: (i) => i === 0 ? -10 : i === 1 ? 5 : i === 2 ? -5 : 8,
         scale: 1,
-        y: 0,
-        duration: DURATIONS.transition,
-        ease: EASINGS.snap,
-      }
-    );
-
-    gsap.fromTo('.cta-text', 
-      { 
-        opacity: 0,
-        y: 100 
-      },
-      {
-        scrollTrigger: {
-          trigger: '.cta-text-wrapper',
-          start: 'top 80%',
-        },
         opacity: 1,
-        y: 0,
-        duration: DURATIONS.entrance,
-        ease: EASINGS.premiumEntrance,
-        delay: 0.2
-      }
-    );
+        duration: 2,
+        ease: 'expo.out',
+        stagger: 0.1
+      }, 'collage');
 
-    gsap.to('.cta-button', {
-      scrollTrigger: {
-        trigger: '.cta-button',
-        start: 'top 90%',
-      },
-      opacity: 1,
-      y: 0,
-      duration: DURATIONS.entrance,
-      ease: EASINGS.smooth,
-      delay: 0.4,
-    });
+    // 3. CTA Reveal
+    tl.to('.collage-overlay', { backgroundColor: 'rgba(0,0,0,0.8)', duration: 1 }, 'cta')
+      .to('.cta-content', { opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' }, 'cta-=0.5');
+
+    // Micro-magnetism on collage items
+    if (!matchMedia('(hover: none)').matches) {
+      pinContainer.addEventListener('mousemove', (e) => {
+        const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+        items.forEach((item, i) => {
+          gsap.to(item as HTMLElement, {
+            x: "+=" + (mouseX * (i + 1) * 10),
+            y: "+=" + (mouseY * (i + 1) * 10),
+            rotationX: mouseY * -10,
+            rotationY: mouseX * 10,
+            duration: 1,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+      });
+    }
   };
 
-  document.addEventListener('astro:page-load', initCtaAnimation);
+  document.addEventListener('astro:page-load', initClimaxAnimation);
 </script>

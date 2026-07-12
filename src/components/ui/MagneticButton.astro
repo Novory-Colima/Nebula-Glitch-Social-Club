@@ -1,0 +1,61 @@
+---
+// src/components/ui/MagneticButton.astro
+interface Props {
+  href?: string;
+  className?: string;
+  as?: 'button' | 'a';
+}
+
+const { href, className = '', as: Element = href ? 'a' : 'button' } = Astro.props;
+---
+
+<Element 
+  href={href} 
+  class={`magnetic-element inline-block interactive ${className}`}
+>
+  <slot />
+</Element>
+
+<script>
+  import gsap from 'gsap';
+
+  const initMagnetic = () => {
+    const magnetics = document.querySelectorAll('.magnetic-element');
+    
+    // Check if device supports hover
+    const isTouch = matchMedia('(hover: none)').matches;
+    if (isTouch) return;
+
+    magnetics.forEach((el) => {
+      const element = el as HTMLElement;
+      
+      element.addEventListener('mousemove', (e) => {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Force calculation
+        const distanceX = e.clientX - centerX;
+        const distanceY = e.clientY - centerY;
+        
+        gsap.to(element, {
+          x: distanceX * 0.3,
+          y: distanceY * 0.3,
+          duration: 0.4,
+          ease: "power3.out"
+        });
+      });
+
+      element.addEventListener('mouseleave', () => {
+        gsap.to(element, {
+          x: 0,
+          y: 0,
+          duration: 0.7,
+          ease: "elastic.out(1, 0.3)"
+        });
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initMagnetic);
+</script>

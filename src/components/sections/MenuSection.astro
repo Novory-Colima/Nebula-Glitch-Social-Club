@@ -1,56 +1,67 @@
 ---
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
+
+const fallbackImages = ['signature.png', 'lounge.png', 'gallery-1.png', 'gallery-2.png', 'gallery-3.png'];
 ---
 
-<section id="menu" class="relative py-32 md:py-48 bg-[var(--color-bg-secondary)] z-10 overflow-hidden">
-  <!-- Warm ambient glow -->
-  <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[40%] rounded-full bg-[var(--color-highlight)] blur-[200px] opacity-[0.03] mix-blend-screen"></div>
+<section id="menu" class="relative min-h-screen bg-[var(--color-bg-primary)] z-10 flex flex-col lg:flex-row overflow-hidden border-t border-[var(--color-border-subtle)]">
+  
+  <!-- Left Panel: Menu -->
+  <div class="w-full lg:w-1/2 relative z-20 py-24 md:py-32 px-6 md:px-12 xl:px-24 flex flex-col justify-center">
+    <!-- Warm ambient glow -->
+    <div class="absolute top-0 left-0 w-full h-[40%] rounded-full bg-[var(--color-highlight)] blur-[200px] opacity-[0.03] mix-blend-screen pointer-events-none"></div>
 
-  <div class="container mx-auto px-6 md:px-12 max-w-5xl">
-    
-    <!-- Header — centered, minimal -->
-    <div class="text-center mb-24">
-      <span class="menu-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-highlight)] font-secondary mb-8 opacity-0 translate-y-4">
+    <div class="mb-16">
+      <span class="menu-label block text-[11px] uppercase tracking-[0.3em] text-[var(--color-glow-secondary)] font-secondary mb-6 opacity-0 translate-y-4">
         {siteContent.menu.label}
       </span>
-      <SectionTitle as="h2" class="text-3xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)]">
+      <SectionTitle as="h2" class="text-4xl md:text-5xl lg:text-6xl font-light text-[var(--color-text-primary)]">
         {siteContent.menu.title}
       </SectionTitle>
     </div>
 
-    <!-- Menu Grid — 2 columns on desktop, typographic, like a printed menu -->
-    <div class="menu-grid grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16">
-      {siteContent.menu.categories.map((category, catIndex) => (
-        <div class="menu-category opacity-0 translate-y-8" data-index={catIndex}>
-          <!-- Category Name -->
-          <h3 class="text-xs uppercase tracking-[0.25em] text-[var(--color-accent-primary)] font-secondary mb-8 pb-4 border-b border-[var(--color-border-subtle)]">
+    <div class="flex flex-col gap-4 menu-categories">
+      {siteContent.menu.categories.map((category, index) => (
+        <div class="menu-category-block group relative py-6 border-b border-[var(--color-border-subtle)]/50" data-index={index}>
+          <h3 class="menu-category-title text-2xl md:text-4xl font-display text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-all duration-500 cursor-pointer flex items-center relative z-10 w-max">
             {category.name}
           </h3>
-
-          <!-- Items -->
-          <ul class="flex flex-col gap-6">
-            {category.items.map((item) => (
-              <li class="group flex flex-col gap-1">
-                <div class="flex items-baseline justify-between gap-4">
-                  <span class="text-[var(--color-text-primary)] font-primary text-base group-hover:text-[var(--color-accent-primary)] transition-colors duration-300">
-                    {item.name}
-                  </span>
-                  <!-- Dotted leader line -->
-                  <span class="flex-1 border-b border-dotted border-[var(--color-border-subtle)] mb-1 min-w-8"></span>
-                  <span class="text-[var(--color-text-primary)] font-primary text-base tabular-nums">
-                    {item.price}
-                  </span>
-                </div>
-                <span class="text-xs text-[var(--color-text-secondary)] font-secondary italic">
-                  {item.note}
-                </span>
-              </li>
-            ))}
-          </ul>
+          
+          <div class="menu-category-items h-0 overflow-hidden opacity-0">
+            <ul class="flex flex-col gap-5 pt-8">
+              {category.items.map((item) => (
+                <li class="flex flex-col">
+                  <div class="flex justify-between items-baseline gap-4">
+                    <span class="text-base text-[var(--color-text-primary)] font-primary tracking-wide">{item.name}</span>
+                    <span class="flex-1 border-b border-dotted border-[var(--color-border-subtle)] opacity-50"></span>
+                    <span class="text-base tabular-nums text-[var(--color-accent-primary)] font-secondary">{item.price}</span>
+                  </div>
+                  <span class="text-xs text-[var(--color-text-secondary)] italic mt-1">{item.note}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       ))}
     </div>
+  </div>
+
+  <!-- Right Panel: Image Gallery (Ken Burns) -->
+  <div class="hidden lg:block lg:w-1/2 relative h-[100vh] sticky top-0 right-0 overflow-hidden">
+    <div class="absolute inset-0 bg-[var(--color-bg-primary)] z-0"></div>
+    {siteContent.menu.categories.map((category, index) => (
+      <div class={`menu-image-wrapper absolute inset-0 z-10 opacity-0 pointer-events-none transition-opacity duration-[1.5s] ease-in-out`} data-index={index}>
+        <img 
+          src={`/images/${fallbackImages[index % fallbackImages.length]}`} 
+          alt={category.name} 
+          class="w-full h-full object-cover menu-img origin-center scale-100" 
+        />
+        <!-- Gradient mask to blend with left side -->
+        <div class="absolute inset-0 bg-gradient-to-r from-[var(--color-bg-primary)] to-transparent w-48"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)]/40 to-transparent"></div>
+      </div>
+    ))}
   </div>
 </section>
 
@@ -62,10 +73,11 @@ import SectionTitle from '../ui/SectionTitle.astro';
   const initMenuAnimation = () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
-      gsap.set('.menu-label, .menu-category', { opacity: 1, y: 0 });
+      gsap.set('.menu-label, .menu-category-block', { opacity: 1, y: 0 });
       return;
     }
 
+    // Intro animations
     gsap.to('.menu-label', {
       scrollTrigger: { trigger: '#menu', start: 'top 70%' },
       opacity: 1, y: 0,
@@ -73,16 +85,85 @@ import SectionTitle from '../ui/SectionTitle.astro';
       ease: EASINGS.smooth,
     });
 
-    gsap.utils.toArray('.menu-category').forEach((cat, i) => {
-      gsap.to(cat as HTMLElement, {
-        scrollTrigger: { trigger: cat as HTMLElement, start: 'top 85%' },
-        opacity: 1,
-        y: 0,
-        duration: DURATIONS.entrance,
-        ease: EASINGS.premiumEntrance,
-        delay: i * 0.12,
-      });
+    gsap.utils.toArray('.menu-category-block').forEach((block, i) => {
+      gsap.fromTo(block as HTMLElement, 
+        { opacity: 0, y: 20 },
+        {
+          scrollTrigger: { trigger: '#menu', start: 'top 60%' },
+          opacity: 1,
+          y: 0,
+          duration: DURATIONS.entrance,
+          ease: EASINGS.premiumEntrance,
+          delay: i * 0.1,
+        }
+      );
     });
+
+    // Desktop Interactive Logic
+    if (window.innerWidth >= 1024) {
+      const blocks = document.querySelectorAll('.menu-category-block');
+      const wrappers = document.querySelectorAll('.menu-image-wrapper');
+      let activeIndex = -1;
+
+      const activateCategory = (index: number) => {
+        if (activeIndex === index) return;
+        
+        // Deactivate previous
+        if (activeIndex !== -1) {
+          const prevBlock = blocks[activeIndex] as HTMLElement;
+          const prevTitle = prevBlock.querySelector('.menu-category-title');
+          const prevItems = prevBlock.querySelector('.menu-category-items');
+          const prevWrapper = wrappers[activeIndex] as HTMLElement;
+          const prevImg = prevWrapper.querySelector('.menu-img');
+
+          gsap.to(prevTitle, { x: 0, fontStyle: 'normal', color: 'var(--color-text-secondary)', duration: 0.4, ease: 'power2.out' });
+          gsap.to(prevItems, { height: 0, opacity: 0, duration: 0.4, ease: 'power2.inOut' });
+          
+          prevWrapper.classList.remove('opacity-100');
+          gsap.killTweensOf(prevImg);
+        }
+
+        // Activate new
+        activeIndex = index;
+        const currentBlock = blocks[activeIndex] as HTMLElement;
+        const currentTitle = currentBlock.querySelector('.menu-category-title');
+        const currentItems = currentBlock.querySelector('.menu-category-items');
+        const currentWrapper = wrappers[activeIndex] as HTMLElement;
+        const currentImg = currentWrapper.querySelector('.menu-img');
+
+        // Typographic choreography
+        gsap.to(currentTitle, { x: 20, fontStyle: 'italic', color: 'var(--color-text-primary)', duration: 0.5, ease: 'power3.out' });
+        
+        // Auto height
+        gsap.set(currentItems, { height: 'auto' });
+        const height = (currentItems as HTMLElement).offsetHeight;
+        gsap.fromTo(currentItems, { height: 0, opacity: 0 }, { height, opacity: 1, duration: 0.6, ease: 'power2.out' });
+
+        // Image crossfade & Ken Burns
+        currentWrapper.classList.add('opacity-100');
+        gsap.fromTo(currentImg, 
+          { scale: 1 }, 
+          { scale: 1.08, duration: 20, ease: 'none' }
+        );
+      };
+
+      // Activate first category by default on scroll into view
+      ScrollTrigger.create({
+        trigger: '#menu',
+        start: 'top center',
+        once: true,
+        onEnter: () => activateCategory(0)
+      });
+
+      // Add event listeners
+      blocks.forEach((block, index) => {
+        block.addEventListener('mouseenter', () => activateCategory(index));
+      });
+    } else {
+      // Mobile behavior: just show all items or use accordion without images
+      const items = document.querySelectorAll('.menu-category-items');
+      gsap.set(items, { height: 'auto', opacity: 1 });
+    }
   };
 
   document.addEventListener('astro:page-load', initMenuAnimation);
