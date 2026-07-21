@@ -2,7 +2,7 @@
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
 
-const fallbackImages = ['lounge.png', 'gallery-4.png', 'philosophy.png', 'signature.png'];
+const spaceImages = ['space-bar.png', 'space-quiet.png', 'space-gaming.png', 'community-2.png'];
 ---
 
 <section id="spaces" class="relative bg-[var(--color-bg-primary)] overflow-hidden z-20 h-screen w-full">
@@ -27,7 +27,7 @@ const fallbackImages = ['lounge.png', 'gallery-4.png', 'philosophy.png', 'signat
          <article class="space-moment relative flex flex-col justify-center flex-shrink-0 w-[75vw] md:w-[45vw] h-[50vh] md:h-[65vh] group opacity-0">
             <div class="overflow-hidden rounded-2xl w-full h-full relative">
                 <img 
-                  src={`/images/${fallbackImages[index % fallbackImages.length]}`} 
+                  src={`/images/${spaceImages[index % spaceImages.length]}`} 
                   alt={space.title}
                   class="space-parallax-img absolute top-0 left-[-20%] w-[140%] h-full object-cover"
                 />

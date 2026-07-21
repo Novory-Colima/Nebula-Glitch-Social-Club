@@ -2,7 +2,7 @@
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
 
-const fallbackImages = ['signature.png', 'lounge.png', 'gallery-1.png', 'gallery-2.png', 'gallery-3.png'];
+const menuImages = ['menu-espresso.png', 'menu-filter.png', 'menu-coldbrew.png', 'menu-matcha.png', 'menu-pastry.png'];
 ---
 
 <section id="menu" class="relative min-h-screen bg-[var(--color-bg-primary)] z-10 flex flex-col lg:flex-row overflow-hidden border-t border-[var(--color-border-subtle)]">
@@ -53,7 +53,7 @@ const fallbackImages = ['signature.png', 'lounge.png', 'gallery-1.png', 'gallery
     {siteContent.menu.categories.map((category, index) => (
       <div class={`menu-image-wrapper absolute inset-0 z-10 opacity-0 pointer-events-none transition-opacity duration-[1.5s] ease-in-out`} data-index={index}>
         <img 
-          src={`/images/${fallbackImages[index % fallbackImages.length]}`} 
+          src={`/images/${menuImages[index % menuImages.length]}`} 
           alt={category.name} 
           class="w-full h-full object-cover menu-img origin-center scale-100" 
         />
