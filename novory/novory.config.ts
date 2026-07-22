@@ -10,11 +10,11 @@
 // ---------------------------------------------------------------------------
 export const NOVORY_LINKS = {
   /** Página principal de Novory Studio */
-  site: "https://novory.studio",
+  site: "https://novorystudio.com",
   /** Página de contacto / solicitar proyecto */
-  contact: "https://novory.studio/contacto",
+  contact: "https://novorystudio.com/contacto",
   /** Formulario de solicitud de proyecto */
-  requestProject: "https://novory.studio/contacto",
+  requestProject: "https://novorystudio.com/contacto",
 } as const;
 
 // ---------------------------------------------------------------------------
