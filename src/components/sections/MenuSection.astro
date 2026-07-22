@@ -2,6 +2,7 @@
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
 
+const base = import.meta.env.BASE_URL;
 const menuImages = ['menu-espresso.png', 'menu-filter.png', 'menu-coldbrew.png', 'menu-matcha.png', 'menu-pastry.png'];
 ---
 
@@ -53,7 +54,7 @@ const menuImages = ['menu-espresso.png', 'menu-filter.png', 'menu-coldbrew.png',
     {siteContent.menu.categories.map((category, index) => (
       <div class={`menu-image-wrapper absolute inset-0 z-10 opacity-0 pointer-events-none transition-opacity duration-[1.5s] ease-in-out`} data-index={index}>
         <img 
-          src={`/images/${menuImages[index % menuImages.length]}`} 
+          src={`${base}images/${menuImages[index % menuImages.length]}`} 
           alt={category.name} 
           class="w-full h-full object-cover menu-img origin-center scale-100" 
         />

@@ -29,6 +29,7 @@ const {
 } = Astro.props;
 
 const cssVars = getNovoryCustomProperties(theme);
+const base = import.meta.env.BASE_URL;
 ---
 
 <div
@@ -64,7 +65,7 @@ const cssVars = getNovoryCustomProperties(theme);
       <!-- Mobile: isotipo -->
       <span class="novory-topbar__logo-compact">
         <img
-          src="/novory/novory-isotipo-color-dark-svg.svg"
+          src={`${base}novory/novory-isotipo-color-dark-svg.svg`}
           alt="Novory"
           width="22"
           height="22"

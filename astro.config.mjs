@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: "https://novory-colima.github.io",
-  base: "/Nebula-Glitch",
+  base: "/Nebula-Glitch-Social-Club/",
 
   vite: {
     plugins: [tailwindcss()]
