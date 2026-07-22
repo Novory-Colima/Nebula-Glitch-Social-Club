@@ -13,7 +13,7 @@ const navLinks = [
 ];
 ---
 
-<header id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 glass-panel border-b border-[var(--color-border-subtle)] translate-y-0 opacity-100">
+<header id="navbar" class="fixed top-[34px] min-[481px]:top-[38px] left-0 w-full z-50 transition-all duration-500 glass-panel border-b border-[var(--color-border-subtle)] translate-y-0 opacity-100">
   <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
     <!-- Brand / Logo -->
     <a href="#" id="navbar-logo" class="relative z-50 text-xl font-display font-bold tracking-[0.2em] text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-primary)] rounded px-2 py-1">
@@ -116,6 +116,11 @@ const navLinks = [
       
       if (isOpen) return;
 
+      const isMobile = window.innerWidth <= 480;
+      const topbarHeight = isMobile ? 34 : 38;
+      const currentTop = Math.max(0, topbarHeight - currentScrollY);
+      navbar.style.top = `${currentTop}px`;
+
       if (currentScrollY > 50) {
         navbar.classList.add('py-2');
         navbar.classList.remove('py-4');
@@ -136,6 +141,7 @@ const navLinks = [
       lastScrollY = currentScrollY;
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Lock/Unlock Scroll using Lenis

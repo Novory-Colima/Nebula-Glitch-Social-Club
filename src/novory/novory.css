@@ -1,0 +1,99 @@
+/* ============================================================================
+   Novory Studio — Branding System Styles
+   ============================================================================
+   Estilos aislados con namespace --novory-. No contaminan la demo anfitriona.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   Tipografía — Space Grotesk
+   Si el proyecto ya incluye Space Grotesk, esta importación se deduplicará.
+   Para cambiar el método de carga, modifica únicamente este bloque.
+   --------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+
+/* ---------------------------------------------------------------------------
+   Keyframes compartidos
+   --------------------------------------------------------------------------- */
+@keyframes novory-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes novory-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes novory-glow-pulse {
+  0%, 100% {
+    box-shadow: var(--novory-shadow-glow-subtle);
+  }
+  50% {
+    box-shadow: var(--novory-shadow-glow);
+  }
+}
+
+@keyframes novory-gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Base styles para el scope Novory
+   --------------------------------------------------------------------------- */
+[data-novory] {
+  font-family: var(--novory-font-body);
+  font-weight: var(--novory-weight-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+[data-novory] *,
+[data-novory] *::before,
+[data-novory] *::after {
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus visible — anillo azul Novory
+   --------------------------------------------------------------------------- */
+[data-novory] :focus-visible {
+  outline: 2px solid var(--novory-blue-cta);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Utilidades de animación
+   --------------------------------------------------------------------------- */
+.novory-animate-fade-in {
+  animation: novory-fade-in var(--novory-duration) var(--novory-easing) both;
+}
+
+.novory-animate-shimmer {
+  background-size: 200% auto;
+  animation: novory-shimmer 3s linear infinite;
+}
+
+.novory-animate-glow {
+  animation: novory-glow-pulse 4s ease-in-out infinite;
+}

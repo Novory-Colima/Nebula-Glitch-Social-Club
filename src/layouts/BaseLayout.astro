@@ -17,6 +17,9 @@ import CustomCursor from '../components/ui/CustomCursor.astro';
 import Atmosphere from '../components/ui/Atmosphere.astro';
 import Navbar from '../components/sections/Navbar.astro';
 import BookingModal from '../components/ui/BookingModal.astro';
+import NovoryTopBar from '../novory/NovoryTopBar.astro';
+import NovoryFloatingBadge from '../novory/NovoryFloatingBadge.astro';
+import '../novory/novory.css';
 ---
 
 <!DOCTYPE html>
@@ -53,7 +56,8 @@ import BookingModal from '../components/ui/BookingModal.astro';
       mediaQuery.addEventListener('change', updateMotionPreference);
     </script>
   </head>
-  <body class="antialiased selection:bg-[var(--color-accent-primary)] selection:text-[var(--color-text-primary)] pt-16 md:pt-20">
+  <body class="antialiased selection:bg-[var(--color-accent-primary)] selection:text-[var(--color-text-primary)] pt-[102px] md:pt-[118px]">
+    <NovoryTopBar />
     <Navbar />
     <Atmosphere />
     <NoiseOverlay />
@@ -63,6 +67,7 @@ import BookingModal from '../components/ui/BookingModal.astro';
     <slot />
 
     <BookingModal />
+    <NovoryFloatingBadge />
 
     <!-- Motion System Initialization -->
     <script>

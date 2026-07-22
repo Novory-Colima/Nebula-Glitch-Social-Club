@@ -1,0 +1,332 @@
+---
+/**
+ * NovoryTopBar — Barra superior de branding Novory
+ * Se posiciona ARRIBA del navbar existente, sin taparlo.
+ * Usa el logotipo oficial de Novory desde los assets SVG.
+ */
+import { NOVORY_LINKS, NOVORY_TEXTS, getNovoryCustomProperties } from "./novory.config";
+
+interface Props {
+  /** Texto central descriptivo */
+  label?: string;
+  /** Texto del botón CTA */
+  ctaText?: string;
+  /** URL del botón CTA */
+  ctaUrl?: string;
+  /** URL del logo (página principal Novory) */
+  siteUrl?: string;
+  /** Tema: 'dark' | 'light' */
+  theme?: "dark" | "light";
+}
+
+const {
+  label = NOVORY_TEXTS.topBar.label,
+  ctaText = NOVORY_TEXTS.topBar.cta,
+  ctaUrl = NOVORY_LINKS.requestProject,
+  siteUrl = NOVORY_LINKS.site,
+  theme = "dark",
+} = Astro.props;
+
+const cssVars = getNovoryCustomProperties(theme);
+---
+
+<div
+  class="novory-topbar"
+  data-novory
+  data-novory-theme={theme}
+  role="banner"
+  aria-label="Barra de branding Novory"
+  style={cssVars}
+>
+  <!-- Animated gradient border (bottom) -->
+  <div class="novory-topbar__gradient-border" aria-hidden="true"></div>
+
+  <div class="novory-topbar__inner">
+    <!-- Izquierda: Logo (logotipo horizontal oficial) -->
+    <a
+      href={siteUrl}
+      class="novory-topbar__logo"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Ir al sitio principal de Novory"
+    >
+      <!-- Desktop/Tablet: logotipo horizontal -->
+      <span class="novory-topbar__logo-full">
+        <img
+          src="/novory/novory-logotipo-horizontal-color-dark-svg.svg"
+          alt="Novory"
+          width="100"
+          height="28"
+          loading="eager"
+        />
+      </span>
+      <!-- Mobile: isotipo -->
+      <span class="novory-topbar__logo-compact">
+        <img
+          src="/novory/novory-isotipo-color-dark-svg.svg"
+          alt="Novory"
+          width="22"
+          height="22"
+          loading="eager"
+        />
+      </span>
+    </a>
+
+    <!-- Centro: Label con dot animado -->
+    <span class="novory-topbar__label">
+      <span class="novory-topbar__label-dot"></span>
+      <span class="novory-topbar__label-text">{label}</span>
+    </span>
+
+    <!-- Derecha: CTA con shimmer -->
+    <a
+      href={ctaUrl}
+      class="novory-topbar__cta"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span class="novory-topbar__cta-text">{ctaText}</span>
+      <span class="novory-topbar__cta-shimmer" aria-hidden="true"></span>
+    </a>
+  </div>
+</div>
+
+<style>
+  /* ===== TopBar — sits ABOVE navbar, not overlapping ===== */
+  .novory-topbar {
+    position: relative;
+    z-index: 60;
+    width: 100%;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    background: var(--novory-bg-base);
+    font-family: var(--novory-font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    animation: novory-topbar-enter 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes novory-topbar-enter {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animated gradient border at the bottom */
+  .novory-topbar__gradient-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--novory-gradient-start) 20%,
+      var(--novory-gradient-mid) 50%,
+      var(--novory-gradient-end) 80%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: novory-border-flow 4s ease-in-out infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes novory-border-flow {
+    0% { background-position: 100% 0; }
+    50% { background-position: 0% 0; }
+    100% { background-position: 100% 0; }
+  }
+
+  .novory-topbar__inner {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 100%;
+  }
+
+  /* --- Logo --- */
+  .novory-topbar__logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    opacity: 0.9;
+    transition: opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .novory-topbar__logo:hover {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  .novory-topbar__logo-full {
+    display: flex;
+    align-items: center;
+  }
+
+  .novory-topbar__logo-full img {
+    height: 16px;
+    width: auto;
+    display: block;
+  }
+
+  .novory-topbar__logo-compact {
+    display: none;
+    align-items: center;
+  }
+
+  .novory-topbar__logo-compact img {
+    height: 18px;
+    width: auto;
+    display: block;
+  }
+
+  /* --- Label (centro) --- */
+  .novory-topbar__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .novory-topbar__label-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--novory-blue-cta);
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--novory-blue-cta),
+                0 0 16px rgba(68, 102, 255, 0.3);
+    animation: novory-dot-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes novory-dot-pulse {
+    0%, 100% {
+      box-shadow: 0 0 6px var(--novory-blue-cta),
+                  0 0 12px rgba(68, 102, 255, 0.2);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 10px var(--novory-blue-cta),
+                  0 0 24px rgba(68, 102, 255, 0.4);
+      transform: scale(1.2);
+    }
+  }
+
+  .novory-topbar__label-text {
+    font-family: var(--novory-font-body);
+    font-weight: var(--novory-weight-medium);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--novory-text-secondary);
+  }
+
+  /* --- CTA con shimmer --- */
+  .novory-topbar__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 16px;
+    font-family: var(--novory-font-body);
+    font-weight: var(--novory-weight-medium);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--novory-text-primary);
+    background: transparent;
+    border: 1px solid var(--novory-border-glass);
+    border-radius: var(--novory-radius-full);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition:
+      background 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .novory-topbar__cta-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Shimmer sweep effect */
+  .novory-topbar__cta-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 60%,
+      transparent 100%
+    );
+    background-size: 250% 100%;
+    animation: novory-shimmer-sweep 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes novory-shimmer-sweep {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  .novory-topbar__cta:hover {
+    background: var(--novory-blue-cta);
+    border-color: var(--novory-blue-cta);
+    color: #FFFFFF;
+    box-shadow: var(--novory-shadow-glow);
+    transform: translateY(-1px);
+  }
+
+  .novory-topbar__cta:hover .novory-topbar__cta-shimmer {
+    animation: none;
+    background: transparent;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .novory-topbar__label {
+      display: none;
+    }
+    .novory-topbar__inner {
+      padding: 0 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .novory-topbar__logo-full {
+      display: none;
+    }
+    .novory-topbar__logo-compact {
+      display: flex;
+    }
+    .novory-topbar__cta {
+      font-size: 10px;
+      padding: 4px 12px;
+    }
+    .novory-topbar {
+      height: 34px;
+    }
+  }
+</style>

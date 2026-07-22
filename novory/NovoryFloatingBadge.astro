@@ -1,0 +1,422 @@
+---
+/**
+ * NovoryFloatingBadge — Badge flotante interactivo
+ * Estado colapsado: isotipo oficial Novory.
+ * Hover desktop: expande con marca + mensaje + CTA.
+ * Click sin hover previo: scroll al FinalCTA.
+ * Mobile: tap toggle.
+ */
+import { NOVORY_LINKS, NOVORY_TEXTS, getNovoryCustomProperties } from "./novory.config";
+
+interface Props {
+  /** Texto del botón CTA */
+  ctaText?: string;
+  /** URL del botón CTA */
+  ctaUrl?: string;
+  /** Mensaje de conversión */
+  message?: string;
+  /** Nombre de marca */
+  brandName?: string;
+  /** Posición del badge */
+  position?: "bottom-left" | "bottom-right";
+  /** Tema: 'dark' | 'light' */
+  theme?: "dark" | "light";
+}
+
+const {
+  ctaText = NOVORY_TEXTS.floatingBadge.cta,
+  ctaUrl = NOVORY_LINKS.requestProject,
+  message = NOVORY_TEXTS.floatingBadge.message,
+  brandName = NOVORY_TEXTS.floatingBadge.brandName,
+  position = "bottom-right",
+  theme = "dark",
+} = Astro.props;
+
+const cssVars = getNovoryCustomProperties(theme);
+const positionClass = position === "bottom-left" ? "novory-badge--left" : "novory-badge--right";
+---
+
+<div
+  class={`novory-badge ${positionClass}`}
+  data-novory
+  data-novory-theme={theme}
+  data-novory-badge
+  role="complementary"
+  aria-label="Badge de Novory"
+  style={cssVars}
+>
+  <div class="novory-badge__container">
+    <!-- Orbital glow ring -->
+    <div class="novory-badge__glow-ring" aria-hidden="true"></div>
+
+    <!-- Isotipo (siempre visible) -->
+    <div class="novory-badge__icon">
+      <img
+        src="/novory/novory-isotipo-color-dark-svg.svg"
+        alt="Novory"
+        width="22"
+        height="22"
+        loading="lazy"
+        class="novory-badge__isotipo"
+      />
+    </div>
+
+    <!-- Contenido expandido -->
+    <div class="novory-badge__content">
+      <span class="novory-badge__brand">{brandName}</span>
+      <p class="novory-badge__message">{message}</p>
+      <a
+        href={ctaUrl}
+        class="novory-badge__cta"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-novory-badge-cta
+      >
+        <span>{ctaText}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="novory-badge__cta-arrow">
+          <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ===== FloatingBadge ===== */
+  .novory-badge {
+    position: fixed;
+    z-index: 85;
+    bottom: 32px;
+    font-family: var(--novory-font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: novory-badge-enter 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 1.5s;
+  }
+
+  .novory-badge--right { right: 24px; }
+  .novory-badge--left { left: 24px; }
+
+  @keyframes novory-badge-enter {
+    from {
+      opacity: 0;
+      transform: translateY(32px) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* --- Container --- */
+  .novory-badge__container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 52px;
+    height: 52px;
+    padding: 15px;
+    background: var(--novory-bg-base);
+    border: 1px solid var(--novory-border-glass);
+    border-radius: var(--novory-radius-full);
+    box-shadow: var(--novory-shadow-glow-subtle);
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      width 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      height 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-radius 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 600ms cubic-bezier(0.16, 1, 0.3, 1),
+      background 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: width, height, border-radius;
+  }
+
+  /* --- Orbital glow --- */
+  .novory-badge__glow-ring {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      var(--novory-gradient-start) 25%,
+      var(--novory-gradient-mid) 50%,
+      var(--novory-gradient-end) 75%,
+      transparent 100%
+    );
+    opacity: 0;
+    animation: novory-orbit-glow 6s linear infinite;
+    transition: opacity 600ms ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes novory-orbit-glow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .novory-badge__container:hover .novory-badge__glow-ring,
+  .novory-badge.is-expanded .novory-badge__glow-ring {
+    opacity: 0.35;
+  }
+
+  /* --- Icon --- */
+  .novory-badge__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+  }
+
+  .novory-badge__isotipo {
+    width: 22px;
+    height: 22px;
+    display: block;
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Breathing idle animation */
+  .novory-badge:not(.is-expanded):not(:hover) .novory-badge__isotipo {
+    animation: novory-badge-breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes novory-badge-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+
+  /* --- Content --- */
+  .novory-badge__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+      opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0ms;
+    padding-top: 14px;
+    width: max-content;
+    max-width: 220px;
+  }
+
+  .novory-badge__brand {
+    font-family: var(--novory-font-heading);
+    font-weight: var(--novory-weight-heading);
+    font-size: 13px;
+    color: var(--novory-text-primary);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .novory-badge__message {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--novory-text-secondary);
+    margin: 0;
+  }
+
+  .novory-badge__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-family: var(--novory-font-body);
+    font-weight: var(--novory-weight-medium);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, var(--novory-gradient-start), var(--novory-gradient-mid), var(--novory-gradient-end));
+    background-size: 200% 200%;
+    animation: novory-cta-gradient 5s ease infinite;
+    border: none;
+    border-radius: var(--novory-radius-md);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 4px;
+  }
+
+  @keyframes novory-cta-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .novory-badge__cta:hover {
+    box-shadow: var(--novory-shadow-glow);
+    transform: translateY(-1px);
+  }
+
+  .novory-badge__cta-arrow {
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .novory-badge__cta:hover .novory-badge__cta-arrow {
+    transform: translateX(3px);
+  }
+
+  /* ===== EXPANDED STATE ===== */
+  /* Desktop: hover */
+  @media (hover: hover) and (pointer: fine) {
+    .novory-badge:hover .novory-badge__container {
+      width: 268px;
+      height: auto;
+      min-height: 180px;
+      border-radius: var(--novory-radius-lg);
+      box-shadow: var(--novory-shadow-glow);
+      background: var(--novory-bg-surface);
+    }
+    .novory-badge:hover .novory-badge__content {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition-delay: 180ms;
+    }
+  }
+
+  /* Mobile: class toggle */
+  .novory-badge.is-expanded .novory-badge__container {
+    width: 268px;
+    height: auto;
+    min-height: 180px;
+    border-radius: var(--novory-radius-lg);
+    box-shadow: var(--novory-shadow-glow);
+    background: var(--novory-bg-surface);
+  }
+
+  .novory-badge.is-expanded .novory-badge__content {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 180ms;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 480px) {
+    .novory-badge {
+      bottom: 20px;
+    }
+    .novory-badge--right { right: 16px; }
+    .novory-badge--left { left: 16px; }
+    .novory-badge__container {
+      width: 46px;
+      height: 46px;
+      padding: 12px;
+    }
+    .novory-badge__icon {
+      width: 20px;
+      height: 20px;
+    }
+    .novory-badge__isotipo {
+      width: 20px;
+      height: 20px;
+    }
+    .novory-badge.is-expanded .novory-badge__container {
+      width: 248px;
+    }
+  }
+</style>
+
+<script>
+  function initNovoryBadge() {
+    const badge = document.querySelector<HTMLElement>("[data-novory-badge]");
+    if (!badge) return;
+
+    let isHovered = false;
+    let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const isTouchDevice = () =>
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+
+    // Track hover state for desktop
+    badge.addEventListener("mouseenter", () => {
+      isHovered = true;
+      hoverTimeout = setTimeout(() => {}, 100);
+    });
+
+    badge.addEventListener("mouseleave", () => {
+      isHovered = false;
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+    });
+
+    // Click behavior
+    badge.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+
+      // If clicking the CTA link, let it navigate normally
+      if (target.closest("[data-novory-badge-cta]")) return;
+
+      if (isTouchDevice()) {
+        // Mobile: toggle expand/collapse
+        e.preventDefault();
+        badge.classList.toggle("is-expanded");
+      } else {
+        // Desktop: if not hovered (expanded), scroll to FinalCTA
+        // On desktop hover already shows expanded state via CSS,
+        // so a direct quick click should scroll to FinalCTA
+        if (!badge.classList.contains("is-expanded")) {
+          e.preventDefault();
+          const finalCta = document.querySelector("[data-novory-final-cta]");
+          if (finalCta) {
+            finalCta.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }
+      }
+    });
+
+    // Desktop: direct click on collapsed badge → scroll to FinalCTA
+    // We use a mousedown+mouseup approach to detect clicks without prior hover expansion
+    let mouseDownTime = 0;
+    badge.addEventListener("mousedown", () => {
+      mouseDownTime = Date.now();
+    });
+
+    badge.addEventListener("mouseup", (e) => {
+      if (isTouchDevice()) return;
+      const target = e.target as HTMLElement;
+      if (target.closest("[data-novory-badge-cta]")) return;
+
+      // Quick click (< 300ms) while badge is in hover-expanded state
+      // means user wants to scroll, not interact with the expansion
+      const clickDuration = Date.now() - mouseDownTime;
+      if (clickDuration < 300) {
+        const finalCta = document.querySelector("[data-novory-final-cta]");
+        if (finalCta) {
+          finalCta.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    });
+
+    // Close on tap outside (mobile)
+    document.addEventListener("click", (e) => {
+      if (!isTouchDevice()) return;
+      if (!badge.classList.contains("is-expanded")) return;
+      const target = e.target as HTMLElement;
+      if (!badge.contains(target)) {
+        badge.classList.remove("is-expanded");
+      }
+    });
+
+    // Close with Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && badge.classList.contains("is-expanded")) {
+        badge.classList.remove("is-expanded");
+      }
+    });
+  }
+
+  initNovoryBadge();
+</script>

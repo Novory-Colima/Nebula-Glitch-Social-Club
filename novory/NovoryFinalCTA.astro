@@ -1,0 +1,471 @@
+---
+/**
+ * NovoryFinalCTA — Sección épica de cierre y conversión
+ * Diseñada para ir DESPUÉS del footer (debajo de todo).
+ * Usa la identidad horizontal oficial de Novory.
+ * Scroll-triggered reveal con stagger.
+ */
+import { NOVORY_LINKS, NOVORY_TEXTS, getNovoryCustomProperties } from "./novory.config";
+
+interface Props {
+  /** Título principal */
+  heading?: string;
+  /** Texto descriptivo */
+  body?: string;
+  /** Texto del botón primario */
+  primaryCta?: string;
+  /** URL del botón primario */
+  primaryUrl?: string;
+  /** Texto del botón secundario */
+  secondaryCta?: string;
+  /** URL del botón secundario */
+  secondaryUrl?: string;
+  /** Tema: 'dark' | 'light' */
+  theme?: "dark" | "light";
+}
+
+const {
+  heading = NOVORY_TEXTS.finalCta.heading,
+  body = NOVORY_TEXTS.finalCta.body,
+  primaryCta = NOVORY_TEXTS.finalCta.primaryCta,
+  primaryUrl = NOVORY_LINKS.requestProject,
+  secondaryCta = NOVORY_TEXTS.finalCta.secondaryCta,
+  secondaryUrl = NOVORY_LINKS.site,
+  theme = "dark",
+} = Astro.props;
+
+const cssVars = getNovoryCustomProperties(theme);
+---
+
+<section
+  class="novory-final"
+  data-novory
+  data-novory-theme={theme}
+  data-novory-final-cta
+  aria-label="Solicitar proyecto con Novory"
+  style={cssVars}
+>
+  <!-- Ambient gradient background -->
+  <div class="novory-final__ambient" aria-hidden="true">
+    <div class="novory-final__orb novory-final__orb--1"></div>
+    <div class="novory-final__orb novory-final__orb--2"></div>
+    <div class="novory-final__orb novory-final__orb--3"></div>
+  </div>
+
+  <!-- Top gradient separator -->
+  <div class="novory-final__divider" aria-hidden="true"></div>
+
+  <div class="novory-final__wrapper">
+    <!-- Identidad horizontal oficial -->
+    <div class="novory-final__identity" data-novory-reveal>
+      <img
+        src="/novory/novory-identidad-horizontal-color-dark-svg.svg"
+        alt="Novory — Innovación digital"
+        class="novory-final__identity-img"
+        loading="lazy"
+      />
+    </div>
+
+    <!-- Heading -->
+    <h2 class="novory-final__heading" data-novory-reveal>
+      {heading}
+    </h2>
+
+    <!-- Body -->
+    <p class="novory-final__body" data-novory-reveal>
+      {body}
+    </p>
+
+    <!-- CTAs -->
+    <div class="novory-final__actions" data-novory-reveal>
+      <a
+        href={primaryUrl}
+        class="novory-final__btn novory-final__btn--primary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="novory-final__btn-text">{primaryCta}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="novory-final__btn-arrow">
+          <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+        </svg>
+        <span class="novory-final__btn-shimmer" aria-hidden="true"></span>
+      </a>
+      <a
+        href={secondaryUrl}
+        class="novory-final__btn novory-final__btn--secondary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {secondaryCta}
+      </a>
+    </div>
+
+    <!-- Attribution micro-text -->
+    <p class="novory-final__attribution" data-novory-reveal>
+      Diseñado y desarrollado por Novory
+    </p>
+  </div>
+</section>
+
+<style>
+  /* ===== FinalCTA ===== */
+  .novory-final {
+    position: relative;
+    width: 100%;
+    background: var(--novory-bg-base);
+    padding: 96px 24px 64px;
+    overflow: hidden;
+    font-family: var(--novory-font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* --- Ambient glowing orbs --- */
+  .novory-final__ambient {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .novory-final__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    animation: novory-orb-float 12s ease-in-out infinite;
+  }
+
+  .novory-final__orb--1 {
+    width: 400px;
+    height: 400px;
+    background: var(--novory-gradient-start);
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+  }
+
+  .novory-final__orb--2 {
+    width: 350px;
+    height: 350px;
+    background: var(--novory-gradient-mid);
+    bottom: -80px;
+    right: -80px;
+    animation-delay: -4s;
+  }
+
+  .novory-final__orb--3 {
+    width: 250px;
+    height: 250px;
+    background: var(--novory-gradient-end);
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-delay: -8s;
+  }
+
+  @keyframes novory-orb-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.1); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+  }
+
+  .novory-final__orb--3 {
+    animation-name: novory-orb-float-center;
+  }
+
+  @keyframes novory-orb-float-center {
+    0%, 100% { transform: translateX(-50%) translate(0, 0) scale(1); }
+    33% { transform: translateX(-50%) translate(20px, -30px) scale(1.15); }
+    66% { transform: translateX(-50%) translate(-15px, 20px) scale(0.9); }
+  }
+
+  /* --- Gradient separator --- */
+  .novory-final__divider {
+    position: absolute;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--novory-gradient-start),
+      var(--novory-gradient-mid),
+      var(--novory-gradient-end),
+      transparent
+    );
+    opacity: 0.5;
+    animation: novory-divider-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes novory-divider-glow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  /* --- Wrapper --- */
+  .novory-final__wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  /* --- Identidad --- */
+  .novory-final__identity {
+    margin-bottom: 12px;
+  }
+
+  .novory-final__identity-img {
+    height: clamp(54px, 6vw, 84px);
+    width: auto;
+    display: block;
+    opacity: 0.9;
+    transition: opacity 600ms ease, transform 600ms ease;
+  }
+
+  .novory-final__identity:hover .novory-final__identity-img {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+
+  /* --- Heading --- */
+  .novory-final__heading {
+    font-family: var(--novory-font-heading);
+    font-weight: var(--novory-weight-heading);
+    font-size: clamp(24px, 4.5vw, 38px);
+    line-height: 1.15;
+    color: var(--novory-text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  /* --- Body --- */
+  .novory-final__body {
+    font-family: var(--novory-font-body);
+    font-weight: var(--novory-weight-body);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--novory-text-secondary);
+    margin: 0;
+    max-width: 520px;
+  }
+
+  /* --- Actions --- */
+  .novory-final__actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* --- Button base --- */
+  .novory-final__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 32px;
+    font-family: var(--novory-font-body);
+    font-weight: var(--novory-weight-medium);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    border-radius: var(--novory-radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    transition:
+      box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Primary: gradient with shimmer */
+  .novory-final__btn--primary {
+    color: #FFFFFF;
+    background: linear-gradient(
+      135deg,
+      var(--novory-gradient-start),
+      var(--novory-gradient-mid),
+      var(--novory-gradient-end)
+    );
+    background-size: 200% 200%;
+    animation: novory-final-btn-gradient 6s ease infinite;
+    border: none;
+    box-shadow: var(--novory-shadow-glow-subtle);
+  }
+
+  @keyframes novory-final-btn-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .novory-final__btn-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .novory-final__btn-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.08) 60%,
+      transparent 100%
+    );
+    background-size: 250% 100%;
+    animation: novory-final-shimmer 3.5s ease-in-out infinite;
+    animation-delay: 1s;
+    pointer-events: none;
+  }
+
+  @keyframes novory-final-shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  .novory-final__btn--primary:hover {
+    box-shadow: var(--novory-shadow-glow-intense);
+    transform: translateY(-3px);
+  }
+
+  .novory-final__btn-arrow {
+    position: relative;
+    z-index: 1;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .novory-final__btn--primary:hover .novory-final__btn-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Secondary: ghost */
+  .novory-final__btn--secondary {
+    color: var(--novory-text-secondary);
+    background: transparent;
+    border: 1px solid var(--novory-border-glass);
+    transition:
+      background 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .novory-final__btn--secondary:hover {
+    color: var(--novory-text-primary);
+    border-color: var(--novory-text-secondary);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-2px);
+  }
+
+  /* --- Attribution --- */
+  .novory-final__attribution {
+    margin-top: 32px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--novory-text-secondary);
+    opacity: 0.4;
+  }
+
+  /* ===== Scroll Reveal ===== */
+  [data-novory-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-novory-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger */
+  [data-novory-reveal]:nth-child(1) { transition-delay: 0ms; }
+  [data-novory-reveal]:nth-child(2) { transition-delay: 120ms; }
+  [data-novory-reveal]:nth-child(3) { transition-delay: 240ms; }
+  [data-novory-reveal]:nth-child(4) { transition-delay: 360ms; }
+  [data-novory-reveal]:nth-child(5) { transition-delay: 480ms; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .novory-final {
+      padding: 72px 24px 48px;
+    }
+    .novory-final__actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    .novory-final__btn {
+      width: 100%;
+      justify-content: center;
+    }
+    .novory-final__orb--1 { width: 250px; height: 250px; }
+    .novory-final__orb--2 { width: 200px; height: 200px; }
+    .novory-final__orb--3 { width: 150px; height: 150px; }
+  }
+
+  @media (max-width: 480px) {
+    .novory-final {
+      padding: 56px 16px 40px;
+    }
+    .novory-final__body {
+      font-size: 14px;
+    }
+    .novory-final__btn {
+      padding: 13px 24px;
+      font-size: 13px;
+    }
+    .novory-final__identity-img {
+      height: clamp(42px, 10vw, 54px);
+    }
+  }
+</style>
+
+<script>
+  function initNovoryFinalCTA() {
+    const section = document.querySelector<HTMLElement>("[data-novory-final-cta]");
+    if (!section) return;
+
+    const reveals = section.querySelectorAll<HTMLElement>("[data-novory-reveal]");
+    if (!reveals.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            reveals.forEach((el) => el.classList.add("is-visible"));
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -30px 0px",
+      }
+    );
+
+    observer.observe(section);
+  }
+
+  initNovoryFinalCTA();
+</script>
