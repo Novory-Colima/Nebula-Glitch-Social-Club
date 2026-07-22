@@ -1,12 +1,13 @@
 ---
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
+const base = import.meta.env.BASE_URL;
 
 const memoryImages = [
-  { src: '/images/community-1.png', speed: 0.8, align: 'left' },
-  { src: '/images/community-2.png', speed: 1.2, align: 'right' },
-  { src: '/images/community-3.png', speed: 0.9, align: 'left' },
-  { src: '/images/community-4.png', speed: 1.4, align: 'right' },
+  { src: '${base}images/community-1.png', speed: 0.8, align: 'left' },
+  { src: '${base}images/community-2.png', speed: 1.2, align: 'right' },
+  { src: '${base}images/community-3.png', speed: 0.9, align: 'left' },
+  { src: '${base}images/community-4.png', speed: 1.4, align: 'right' },
 ];
 ---
 

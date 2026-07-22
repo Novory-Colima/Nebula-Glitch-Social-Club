@@ -1,12 +1,13 @@
 ---
 import { siteContent } from '../../core/data/content';
 import PremiumButton from '../ui/PremiumButton.astro';
+const base = import.meta.env.BASE_URL;
 
 const collageImages = [
-  { src: '/images/gallery-1.png', classes: 'w-48 h-64 md:w-64 md:h-80 -rotate-6' },
-  { src: '/images/gallery-4.png', classes: 'w-56 h-40 md:w-72 md:h-56 rotate-3' },
-  { src: '/images/lounge.png', classes: 'w-64 h-64 md:w-80 md:h-80 rotate-12' },
-  { src: '/images/signature.png', classes: 'w-40 h-56 md:w-56 md:h-72 -rotate-12' },
+  { src: `${base}images/gallery-1.png`, classes: 'w-48 h-64 md:w-64 md:h-80 -rotate-6' },
+  { src: `${base}images/gallery-4.png`, classes: 'w-56 h-40 md:w-72 md:h-56 rotate-3' },
+  { src: `${base}images/lounge.png`, classes: 'w-64 h-64 md:w-80 md:h-80 rotate-12' },
+  { src: `${base}images/signature.png`, classes: 'w-40 h-56 md:w-56 md:h-72 -rotate-12' },
 ];
 ---
 

@@ -1,6 +1,7 @@
 ---
 import { siteContent } from '../../core/data/content';
 import SectionTitle from '../ui/SectionTitle.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <section id="philosophy" class="relative py-32 md:py-48 bg-[var(--color-bg-secondary)] z-10 overflow-hidden">
@@ -22,7 +23,7 @@ import SectionTitle from '../ui/SectionTitle.astro';
       <div class="lg:col-span-5 relative">
         <div class="philosophy-image-wrapper relative aspect-[3/4] lg:-ml-12 rounded-2xl overflow-hidden" style="clip-path: inset(100% 0% 0% 0%);">
           <img 
-            src="/images/philosophy.png"
+            src="${base}images/philosophy.png"
             alt="Granos de café de especialidad — proceso de selección y tueste artesanal"
             class="philosophy-image w-full h-full object-cover scale-125 origin-center"
             loading="lazy"
