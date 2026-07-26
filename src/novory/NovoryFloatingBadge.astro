@@ -48,7 +48,7 @@ const isotipo = theme === "light" ? isotipoClear : isotipoDark;
   aria-label="Badge de Novory"
   style={cssVars}
 >
-  <div class="novory-badge__container">
+  <div class="novory-badge__container" tabindex="0">
     <!-- Orbital glow ring -->
     <div class="novory-badge__glow-ring" aria-hidden="true"></div>
 
@@ -354,6 +354,17 @@ const isotipo = theme === "light" ? isotipoClear : isotipoDark;
       isHovered = false;
       if (hoverTimeout) clearTimeout(hoverTimeout);
     });
+
+    // Accessibility for keyboard focus
+    const container = badge.querySelector('.novory-badge__container') as HTMLElement;
+    if (container) {
+      container.addEventListener("focus", () => {
+        if (!isTouchDevice()) badge.classList.add("is-expanded");
+      });
+      container.addEventListener("blur", () => {
+        badge.classList.remove("is-expanded");
+      });
+    }
 
     // Click behavior
     badge.addEventListener("click", (e) => {

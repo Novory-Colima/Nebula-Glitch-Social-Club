@@ -32,7 +32,7 @@ const collageImages = [
       <div class="collage-center relative w-0 h-0 flex items-center justify-center">
         {collageImages.map((img, i) => (
           <div class={`collage-item absolute rounded-xl overflow-hidden shadow-2xl opacity-0 ${img.classes}`} data-index={i}>
-            <img src={img.src} class="w-full h-full object-cover scale-[1.2] collage-img" alt="Nebula Climax" />
+            <img src={img.src} class="w-full h-full object-cover scale-[1.2] collage-img" alt="Nebula Climax" loading="lazy" decoding="async" />
             <div class="absolute inset-0 bg-black/40 mix-blend-multiply collage-overlay"></div>
           </div>
         ))}
@@ -42,7 +42,7 @@ const collageImages = [
     <!-- Phase 3: Final CTA -->
     <div class="cta-content absolute inset-0 z-30 flex flex-col items-center justify-center pointer-events-none opacity-0">
       <div class="bg-[var(--color-bg-primary)]/40 backdrop-blur-md border border-[var(--color-border-subtle)]/50 p-12 md:p-20 rounded-3xl text-center max-w-4xl mx-4 shadow-[0_0_50px_rgba(107,90,255,0.1)]">
-        <h2 class="text-4xl md:text-6xl lg:text-8xl font-display font-bold text-[var(--color-text-primary)] mb-6 tracking-tight drop-shadow-xl">
+        <h2 class="text-4xl md:text-6xl lg:text-8xl font-display font-bold text-[var(--color-text-primary)] mb-6 tracking-tight drop-shadow-xl text-balance">
           {siteContent.cta.title}
         </h2>
         <p class="text-lg md:text-2xl text-[var(--color-text-secondary)] font-secondary font-light leading-relaxed max-w-2xl mx-auto mb-10 drop-shadow-md">
@@ -143,3 +143,9 @@ const collageImages = [
 
   document.addEventListener('astro:page-load', initClimaxAnimation);
 </script>
+
+<style>
+  .collage-item {
+    will-change: transform, opacity;
+  }
+</style>

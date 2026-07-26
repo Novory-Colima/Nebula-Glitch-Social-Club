@@ -194,3 +194,9 @@ const base = import.meta.env.BASE_URL;
 
   document.addEventListener('astro:page-load', initHeroAnimation);
 </script>
+
+<style>
+  .hero-camera, .hero-content, .hero-atmosphere {
+    will-change: transform;
+  }
+</style>

@@ -64,15 +64,16 @@ const Tag = href ? 'a' : 'button';
         const deltaY = y - centerY;
 
         gsap.to(b, {
-          x: deltaX * 0.3,
-          y: deltaY * 0.3,
+          x: deltaX * 0.5,
+          y: deltaY * 0.5,
+          scale: 1.05,
           duration: 0.4,
           ease: 'power2.out'
         });
         
         gsap.to(content, {
-          x: deltaX * 0.15,
-          y: deltaY * 0.15,
+          x: deltaX * 0.25,
+          y: deltaY * 0.25,
           duration: 0.4,
           ease: 'power2.out'
         });
@@ -92,6 +93,7 @@ const Tag = href ? 'a' : 'button';
         gsap.to(b, {
           x: 0,
           y: 0,
+          scale: 1,
           duration: 0.7,
           ease: 'elastic.out(1, 0.3)'
         });

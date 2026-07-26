@@ -108,13 +108,16 @@ const navLinks = [
 
     let isOpen = false;
 
-    // Scroll effect (hide/show/blur)
     let lastScrollY = window.scrollY;
+    let ticking = false;
     
-    const handleScroll = () => {
+    const updateNavbar = () => {
       const currentScrollY = window.scrollY;
       
-      if (isOpen) return;
+      if (isOpen) {
+        ticking = false;
+        return;
+      }
 
       const isMobile = window.innerWidth <= 480;
       const topbarHeight = isMobile ? 34 : 38;
@@ -131,14 +134,20 @@ const navLinks = [
 
       // Hide on scroll down, show on scroll up
       if (currentScrollY > 150 && currentScrollY > lastScrollY) {
-        // Scrolling down
         navbar.style.transform = 'translateY(-100%)';
       } else {
-        // Scrolling up
         navbar.style.transform = 'translateY(0)';
       }
       
       lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNavbar);
+        ticking = true;
+      }
     };
 
     handleScroll();
