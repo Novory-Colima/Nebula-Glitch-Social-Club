@@ -6,8 +6,8 @@
  * Scroll-triggered reveal con stagger.
  */
 import { NOVORY_LINKS, NOVORY_TEXTS, getNovoryCustomProperties } from "./novory.config";
-import identidadDark from "./assets/novory-identidad-horizontal-color-dark-svg.svg";
-import identidadClear from "./assets/novory-identidad-horizontal-color-clear-svg.svg";
+import identidadDark from "./assets/novory-identidad-apilado-color-dark-svg.svg";
+import identidadClear from "./assets/novory-identidad-apilado-color-clear-svg.svg";
 
 interface Props {
   /** Título principal */
@@ -227,10 +227,10 @@ const identidad = theme === "light" ? identidadClear : identidadDark;
   }
 
   .novory-final__identity-img {
-    height: clamp(54px, 6vw, 84px);
+    width: clamp(100px, 12vw, 160px);
+    height: auto;
     max-width: 100%;
     object-fit: contain;
-    width: auto;
     display: block;
     opacity: 0.9;
     transition: opacity 600ms ease, transform 600ms ease;
@@ -443,7 +443,7 @@ const identidad = theme === "light" ? identidadClear : identidadDark;
       font-size: 13px;
     }
     .novory-final__identity-img {
-      height: clamp(42px, 10vw, 54px);
+      width: clamp(80px, 18vw, 120px);
     }
   }
 </style>
