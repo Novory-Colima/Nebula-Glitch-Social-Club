@@ -1,0 +1,21 @@
+{
+  "name": "Nebula Glitch Social Club",
+  "short_name": "Nebula",
+  "description": "Cafetería premium de especialidad con diseño contemporáneo, tecnología integrada y gaming lounge — CDMX.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06070B",
+  "theme_color": "#06070B",
+  "icons": [
+    {
+      "src": "/novory-icon-color-dark-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/novory-icon-color-dark-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
